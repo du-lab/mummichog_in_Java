@@ -46,6 +46,9 @@ public class PathwayAnalysis {
 		this.network=this.mixedNetwork.getModel().getNetwork();
 		this.paradict=this.mixedNetwork.getData().getParadict();
 		this.pathways=this.getPathways(pathways);
+		this.significantEmpiricalCompounds = new HashSet<EmpiricalCompound>();
+		this.permutationRecord= new ArrayList<Double>();
+		this.resultListOfPathways= new ArrayList<MetabolicPathway>();
 		// need to figure out the data type resultListOfPathways = []   
 		
 		this.trioList=mixedNetowrk.getTrioList();

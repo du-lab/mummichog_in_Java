@@ -57,6 +57,7 @@ public class ModularAnalysis {
 		this.modulesFromSignificantFeaures= this.runAnalysisReal();
 		this.permutationScores=this.doPermutations(Integer.parseInt(this.paradict.get("permutation")));
 		System.out.println("Modular Analysis is done");
+		this.rankSignificance();
 			
 		
 	}
@@ -231,10 +232,10 @@ public class ModularAnalysis {
 	}
 	
 	void rankSignificance() {
-		LOGGER.info("\nNull distribution is estimated on" + this.permutationScores.size() +"random modules");
-		LOGGER.info("User data yield" + this.modulesFromSignificantFeaures.size() + "network modules");
+		LOGGER.info("\nNull distribution is estimated on " + this.permutationScores.size() +" random modules");
+		LOGGER.info("User data yield " + this.modulesFromSignificantFeaures.size() + " network modules");
 		
-		if(this.paradict.get("Modeling").equalsIgnoreCase("gamma")) {
+		if(this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
 			// Need a gamma function here
 			GammaDistribution gammaDistribution= new GammaDistribution(this.giveDoubleArray(this.permutationScores));
 			for (MModule mod: this.modulesFromSignificantFeaures) {
@@ -255,6 +256,7 @@ public class ModularAnalysis {
 		}
 		
 		// TODO Sorting has been done on top modules in the python code . Check why 
+		System.out.println("total number of top modules: "+ this.topModules.size());
 		
 	}
 	

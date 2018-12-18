@@ -127,6 +127,8 @@ public class DataMeetModel {
 					listOfFeatures = new ArrayList<CPD2mzFeatures>();
 					listOfFeatures.add(new CPD2mzFeatures(li.get(1), Double.parseDouble(li.get(2)), mf));
 					cpd2mzFeatures.put(li.get(0), listOfFeatures);
+				}else {
+					cpd2mzFeatures.get(li.get(0)).add(new CPD2mzFeatures(li.get(1), Double.parseDouble(li.get(2)), mf));
 				}
 			}
 		}
@@ -288,8 +290,10 @@ public class DataMeetModel {
 
 	public List<RowEmpcpd> batch_rowindex_EmpCpd_Cpd(List<String> significant_features) {
 		List<RowEmpcpd> result = new ArrayList<RowEmpcpd>();
+		int count_match=0;
 		for (String sf : significant_features) {
 			if(this.rowindex_to_EmpiricalCompounds.containsKey(sf)) {
+				count_match++;
 			for (EmpiricalCompound ec : this.rowindex_to_EmpiricalCompounds.get(sf)) {
 				for (String cpd : ec.getCompounds()) {
 					result.add(new RowEmpcpd(sf, ec, cpd));
@@ -298,6 +302,7 @@ public class DataMeetModel {
 			}
 			}
 		}
+		System.out.println("Count match is " + count_match);
 		return result;
 	}
 
