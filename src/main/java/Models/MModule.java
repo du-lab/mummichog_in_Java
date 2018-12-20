@@ -9,6 +9,9 @@ import java.util.Set;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
+import getuserdata.EmpiricalCompound;
+import pojo.RowEmpcpd;
+
 public class MModule {
 
 	private Graph<String, DefaultEdge> network;
@@ -21,11 +24,12 @@ public class MModule {
 	private String nodeStr;
 	private double pValue;
 
-	public MModule(Graph<String, DefaultEdge> network, Graph<String, DefaultEdge> subgraph, List<String> trioList) {
+	public MModule(Graph<String, DefaultEdge> network, Graph<String, DefaultEdge> subgraph, List <RowEmpcpd>trioList) {
 		// TrioList is the third element lost of the original triolist.
 		this.network = network;
 		this.graph = subgraph;
-		this.shave(trioList);
+		// check this function
+		this.shave(returnCompunds(trioList));
 		this.num_ref_nodes = this.network.vertexSet().size();
 		this.num_ref_edges = this.network.edgeSet().size();
 		this.n_seeds = trioList.size();
@@ -46,20 +50,26 @@ public class MModule {
 		return result.toString();	
 	}
 
-	int get_num_EmpCpd(List<String> trioList) {
+	int get_num_EmpCpd(List <RowEmpcpd> trioList) {
+		Set<EmpiricalCompound> nodesForCount = new HashSet<EmpiricalCompound>();
 
-		int count = 0;
-
-		for (String node : this.graph.vertexSet()) {
-			if (trioList.contains(node)) {
-				count++;
+//		for (String node : this.graph.vertexSet()) {
+//			if (trioList.contains(node)) {
+//				count++;
+//			}
+//		}
+		
+		for(RowEmpcpd node : trioList) {
+			if(this.graph.vertexSet().contains(node.getCompound())) {
+				//count++;
+				nodesForCount.add(node.getEmpiricalCompound());
 			}
 		}
 
-		return count;
+		return nodesForCount.size();
 	}
 
-	double activity_score(List<String> seed_cpds, int num_EmpCpd) {
+	double activity_score(List <RowEmpcpd> seed_cpds, int num_EmpCpd) {
 
 		Float nm = (float) this.graph.vertexSet().size();
 
@@ -148,6 +158,15 @@ public class MModule {
 //	        out.close()
 //		}
 
+	public List<String> returnCompunds(List <RowEmpcpd>trioList){
+		List<String> result = new ArrayList<String>();
+		for(RowEmpcpd row: trioList){
+			result.add(row.getCompound());
+		}
+
+		return result;
+		
+	}
 	public Graph<String, DefaultEdge> getNetwork() {
 		return network;
 	}

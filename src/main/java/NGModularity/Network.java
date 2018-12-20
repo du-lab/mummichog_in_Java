@@ -145,7 +145,7 @@ public class Network {
 			
 			for(int k=0;k<this.numOfNodes;k++) {
 				for(int l=0;l<this.numOfNodes;l++) {
-					am[k][l]= (this.adjacencyMatrix[k][l])-((this.degrees.get(k) * this.degrees.get(k))/(2.0/this.numOfEdges));
+					am[k][l]= (this.adjacencyMatrix[k][l])-((this.degrees.get(k) * this.degrees.get(l))/(2.0*this.numOfEdges));
 				}
 			}
 			this.modularityMatrix=am;

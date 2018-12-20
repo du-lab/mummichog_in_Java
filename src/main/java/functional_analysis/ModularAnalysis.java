@@ -101,12 +101,12 @@ public class ModularAnalysis {
 		List<List<String>> temp_edges = new ArrayList<List<String>>();
 		Graph<String, DefaultEdge> newNetwork = null;
 		
-		//Getting list of compds from the triolist to create Mmodule
-		List<String> cpds = new ArrayList<String>();
-		
-		for (RowEmpcpd rec :significant_Trios) {
-			cpds.add(rec.getCompound());
-		}
+//		//Getting list of compds from the triolist to create Mmodule
+//		List<String> cpds = new ArrayList<String>();
+//		
+//		for (RowEmpcpd rec :significant_Trios) {
+//			cpds.add(rec.getCompound());
+//		}
 		
 		try {
 		
@@ -142,7 +142,7 @@ public class ModularAnalysis {
 			Set<Graph<String, DefaultEdge>> stronglyConnectedSubgraphs = scAlg.getConnectedComponents();
 			for (Graph<String,DefaultEdge> g1 : stronglyConnectedSubgraphs) {
 				if(3 < g1.vertexSet().size() && g1.vertexSet().size() < Constants.MODULE_SIZE_LIMIT) {
-	            	MModule modul= new MModule(this.network,g1,cpds);
+	            	MModule modul= new MModule(this.network,g1,significant_Trios);
 	            	modules.add(modul);
 	            }
 			}
@@ -156,7 +156,7 @@ public class ModularAnalysis {
 		for(MModule sub:modules) {
 			if(sub.getGraph().vertexSet().size()>5) {
 				for(Graph<String,DefaultEdge> graph: this.splitModules(sub.getGraph())) {
-					modules2.add(new MModule(this.network, graph, cpds));
+					modules2.add(new MModule(this.network, graph, significant_Trios));
 				}
 			}
 		}
