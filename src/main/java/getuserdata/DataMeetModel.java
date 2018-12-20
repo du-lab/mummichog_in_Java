@@ -163,7 +163,7 @@ public class DataMeetModel {
 			all_mzFeatures.add(tempList);
 		}
 
-		Collections.sort(all_mzFeatures, (a, b) -> a.get(0).compareTo(b.get(0)));
+		Collections.sort(all_mzFeatures, (a, b) -> Double.compare(Double.parseDouble(a.get(0)),Double.parseDouble(b.get(0))));
 
 		temp.add(all_mzFeatures.get(0));
 		// This should not work for only one element in all_mzFeatures. The loop should run till size-2 .
@@ -171,11 +171,11 @@ public class DataMeetModel {
 		for (int i = 0; i < all_mzFeatures.size()-1; i++) {
 			if ((Double.parseDouble(all_mzFeatures.get(i + 1).get(0))
 					- Double.parseDouble(all_mzFeatures.get(i).get(0))) < rtime_tolerance) {
-				temp.add(all_mzFeatures.get(1));
+				temp.add(all_mzFeatures.get(i+1));
 			} else {
 				eCompounds.add(new EmpiricalCompound(temp));
 				temp.clear();
-				temp.add(all_mzFeatures.get(1));
+				temp.add(all_mzFeatures.get(i+1));
 			}
 		}
 		}
@@ -290,10 +290,10 @@ public class DataMeetModel {
 
 	public List<RowEmpcpd> batch_rowindex_EmpCpd_Cpd(List<String> significant_features) {
 		List<RowEmpcpd> result = new ArrayList<RowEmpcpd>();
-		int count_match=0;
+	//	int count_match=0;
 		for (String sf : significant_features) {
 			if(this.rowindex_to_EmpiricalCompounds.containsKey(sf)) {
-				count_match++;
+	//			count_match++;
 			for (EmpiricalCompound ec : this.rowindex_to_EmpiricalCompounds.get(sf)) {
 				for (String cpd : ec.getCompounds()) {
 					result.add(new RowEmpcpd(sf, ec, cpd));
@@ -302,7 +302,7 @@ public class DataMeetModel {
 			}
 			}
 		}
-		System.out.println("Count match is " + count_match);
+	//	System.out.println("Count match is " + count_match);
 		return result;
 	}
 

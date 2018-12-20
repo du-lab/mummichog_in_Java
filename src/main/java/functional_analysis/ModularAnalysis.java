@@ -111,16 +111,17 @@ public class ModularAnalysis {
 		try {
 		
 		for (int i = 0; i < Constants.SEARCH_STEPS; i++) {
-			edges = getgraphedges(seeds);
+			// Problem the number of edges coming in python code are 400 more
+			edges = getgraphedges(seeds);;
 			if (i == 0) {
 				// Step 0 to count the edges connected to the seeds
 				for (List<String> li : edges) {
 					if (seeds.contains(li.get(0)) && seeds.contains(li.get(1))) {
 						temp_edges.add(li);
-					}
+					}}
 					newNetwork = build_network(temp_edges);
-					temp_edges.clear();
-				}
+		//			System.out.println(temp_edges);
+					temp_edges.clear();			
 			} else {
 				newNetwork = build_network(edges);
 				seeds = new ArrayList<String>(newNetwork.vertexSet());
@@ -176,18 +177,21 @@ public class ModularAnalysis {
 	
 	List<List<String>> getgraphedges(List<String> vertices){
 		List<List<String>> result = new ArrayList <List<String>>();
-		DefaultEdge edge;
-		 for(String v1: vertices) {
-			 for(String v2:vertices) {
-				 if(!v1.equalsIgnoreCase(v2)) {
-				 edge=this.network.getEdge(v1, v2);
-				 if(edge!=null) {
-					 // Adding edge in as getting vertex from default edge class is not happening
-					 result.add(new ArrayList<String>(Arrays.asList(v1,v2)));
-				 }
-				 }
-			 }
-		 }
+		// Maybe the edges should be counted even if they are connected to just one vertex
+		
+		//approach 2 
+		for(DefaultEdge ed: this.network.edgeSet()) {
+			if(vertices.contains(this.network.getEdgeSource(ed)) || vertices.contains(this.network.getEdgeTarget(ed))){
+				result.add(new ArrayList<String>(Arrays.asList(this.network.getEdgeSource(ed),this.network.getEdgeTarget(ed))));
+			}
+		}
+		
+		
+//		//approach 3
+//		Set<DefaultEdge> edgst= new HashSet<DefaultEdge>();
+//		for(String v: vertices) {
+//			edgst.addAll(this.network.edgesOf(v));
+//		}
 		
 		return result;
 	}
