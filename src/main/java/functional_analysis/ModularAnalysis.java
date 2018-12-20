@@ -281,7 +281,7 @@ public class ModularAnalysis {
 		total_scores.addAll(record);
 		Collections.sort(total_scores, Collections.reverseOrder());
 		double d = total_scores.size();
-		return (total_scores.indexOf(x) +1/d);
+		return (total_scores.indexOf(x) +1)/d;
 
 	}
 	
