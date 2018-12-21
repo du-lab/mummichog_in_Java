@@ -148,6 +148,7 @@ public class Constants {
 		long time_stamp = System.currentTimeMillis();
 		optionsMap=new HashMap<String,String>();
 		optionsMap.put("cutoff","0");
+		optionsMap.put("network","human_mfn");
 		optionsMap.put("modeling", "None");
 		optionsMap.put("mode","pos_default");
 		optionsMap.put("instrument","unspecified");

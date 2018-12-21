@@ -57,16 +57,14 @@ public class Orchestration {
 		
 		MetabolicNetwork theoreticalModel=null;
 		
-		
-		// check the issue in parameter picking
-//		if(human.contains(userdata.getParadict().get("network"))){
+		if(human.contains(userdata.getParadict().get("network"))){
 			
 			theoreticalModel = new MetabolicNetwork(rm.getHuman_model_mfn());
 			
-//		}else if (worm.contains(userdata.getParadict().get("network"))) {
-//			theoreticalModel = new MetabolicNetwork(rm.getWorm_model_icel1273());
-//		}
-//		
+		}else if (worm.contains(userdata.getParadict().get("network"))) {
+			theoreticalModel = new MetabolicNetwork(rm.getWorm_model_icel1273());
+		}
+		
 		DataMeetModel mixedNetwork = new DataMeetModel(theoreticalModel, userdata);
 		
 		PathwayAnalysis pathwayAnalysis = new PathwayAnalysis(mixedNetwork, mixedNetwork.getModel().getMetabolicModel().getMetabolic_pathways());
@@ -76,7 +74,7 @@ public class Orchestration {
 		ModularAnalysis modularAnalysis = new ModularAnalysis(mixedNetwork);
 		modularAnalysis.dispatch();
 		
-		// Check the set property thing here. Need to do something about it. Check if we can apply equals method for this
+		
 		Set<RowEmpcpd> combined_TrioList = new HashSet<RowEmpcpd>();
 		combined_TrioList.addAll(pathwayAnalysis.collectHitTrios());
 		combined_TrioList.addAll(modularAnalysis.collectHitTrios());

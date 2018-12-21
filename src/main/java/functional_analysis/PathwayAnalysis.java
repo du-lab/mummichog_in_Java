@@ -171,11 +171,15 @@ public class PathwayAnalysis {
 		this.do_permutations(pathways, Integer.parseInt(this.paradict.get("permutation")));
 
 		if (this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
-			// if(true) {
+		//	if(true) {
 			// TODO need to correct vector fit
 			List<Double> vectorToFit = new ArrayList<Double>();
 			for (Double d : this.permutationRecord) {
-				vectorToFit.add(-1 * Math.log10(d));
+				double rescal=-1 * Math.log10(d);
+				if(rescal<= 0.0) {
+					rescal=0.00000000000000000000000000000000000000000000001;
+				}
+				vectorToFit.add(rescal);
 			}
 
 			GammaDistribution gammaDistribution = new GammaDistribution(giveDoubleArray(vectorToFit));
