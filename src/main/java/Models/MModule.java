@@ -33,7 +33,6 @@ public class MModule {
 		this.num_ref_nodes = this.network.vertexSet().size();
 		this.num_ref_edges = this.network.edgeSet().size();
 		this.n_seeds = trioList.size();
-		// TODO implement shave yet
 		this.activityScore = activity_score(trioList, get_num_EmpCpd(trioList));
 		this.setNodeStr(makeNodeStr());
 	}

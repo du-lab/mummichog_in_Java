@@ -37,7 +37,6 @@ public class Network {
 		this.qVal=0;
 		this.numOfEdges=0;
 		this.numOfNodes=0;
-		//TODO Check if any more initializations need to be done
 		this.edges=new ArrayList<List<String>>();
 	}
 	

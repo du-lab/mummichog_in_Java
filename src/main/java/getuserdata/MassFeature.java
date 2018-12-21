@@ -144,6 +144,94 @@ public class MassFeature {
 	public void setDatabase_match(List<String> database_match) {
 		this.database_match = database_match;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((compoundID_from_user == null) ? 0 : compoundID_from_user.hashCode());
+		result = prime * result + ((database_match == null) ? 0 : database_match.hashCode());
+		result = prime * result + ((is_significant == null) ? 0 : is_significant.hashCode());
+		result = prime * result + ((matched_Compounds == null) ? 0 : matched_Compounds.hashCode());
+		result = prime * result + ((matched_EmpiricalCompounds == null) ? 0 : matched_EmpiricalCompounds.hashCode());
+		result = prime * result + ((matched_Ions == null) ? 0 : matched_Ions.hashCode());
+		result = prime * result + ((mz == null) ? 0 : mz.hashCode());
+		result = prime * result + ((p_value == null) ? 0 : p_value.hashCode());
+		result = prime * result + peak_quality;
+		result = prime * result + ((retention_time == null) ? 0 : retention_time.hashCode());
+		result = prime * result + ((row_number == null) ? 0 : row_number.hashCode());
+		result = prime * result + ((statistic == null) ? 0 : statistic.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MassFeature other = (MassFeature) obj;
+		if (compoundID_from_user == null) {
+			if (other.compoundID_from_user != null)
+				return false;
+		} else if (!compoundID_from_user.equals(other.compoundID_from_user))
+			return false;
+		if (database_match == null) {
+			if (other.database_match != null)
+				return false;
+		} else if (!database_match.equals(other.database_match))
+			return false;
+		if (is_significant == null) {
+			if (other.is_significant != null)
+				return false;
+		} else if (!is_significant.equals(other.is_significant))
+			return false;
+		if (matched_Compounds == null) {
+			if (other.matched_Compounds != null)
+				return false;
+		} else if (!matched_Compounds.equals(other.matched_Compounds))
+			return false;
+		if (matched_EmpiricalCompounds == null) {
+			if (other.matched_EmpiricalCompounds != null)
+				return false;
+		} else if (!matched_EmpiricalCompounds.equals(other.matched_EmpiricalCompounds))
+			return false;
+		if (matched_Ions == null) {
+			if (other.matched_Ions != null)
+				return false;
+		} else if (!matched_Ions.equals(other.matched_Ions))
+			return false;
+		if (mz == null) {
+			if (other.mz != null)
+				return false;
+		} else if (!mz.equals(other.mz))
+			return false;
+		if (p_value == null) {
+			if (other.p_value != null)
+				return false;
+		} else if (!p_value.equals(other.p_value))
+			return false;
+		if (peak_quality != other.peak_quality)
+			return false;
+		if (retention_time == null) {
+			if (other.retention_time != null)
+				return false;
+		} else if (!retention_time.equals(other.retention_time))
+			return false;
+		if (row_number == null) {
+			if (other.row_number != null)
+				return false;
+		} else if (!row_number.equals(other.row_number))
+			return false;
+		if (statistic == null) {
+			if (other.statistic != null)
+				return false;
+		} else if (!statistic.equals(other.statistic))
+			return false;
+		return true;
+	}
 	
 	
 	

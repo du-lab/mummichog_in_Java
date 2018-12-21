@@ -4,22 +4,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import Models.MetabolicNetwork;
+import functional_analysis.ActivityNetwork;
 import functional_analysis.ModularAnalysis;
 import functional_analysis.PathwayAnalysis;
 import getuserdata.DataMeetModel;
 import getuserdata.InputUserData;
 import getuserdata.UserDataClass;
-import pojo.MetabolicModel;
 import pojo.RealModels;
+import pojo.RowEmpcpd;
 
 public class Orchestration {
 	
@@ -67,11 +69,19 @@ public class Orchestration {
 //		
 		DataMeetModel mixedNetwork = new DataMeetModel(theoreticalModel, userdata);
 		
-	//	PathwayAnalysis pathwayAnalysis = new PathwayAnalysis(mixedNetwork, mixedNetwork.getModel().getMetabolicModel().getMetabolic_pathways());
-//		pathwayAnalysis.cpd_enrich_test();
+		PathwayAnalysis pathwayAnalysis = new PathwayAnalysis(mixedNetwork, mixedNetwork.getModel().getMetabolicModel().getMetabolic_pathways());
+		pathwayAnalysis.cpd_enrich_test();
+	
 		
 		ModularAnalysis modularAnalysis = new ModularAnalysis(mixedNetwork);
 		modularAnalysis.dispatch();
+		
+		// Check the set property thing here. Need to do something about it. Check if we can apply equals method for this
+		Set<RowEmpcpd> combined_TrioList = new HashSet<RowEmpcpd>();
+		combined_TrioList.addAll(pathwayAnalysis.collectHitTrios());
+		combined_TrioList.addAll(modularAnalysis.collectHitTrios());
+		ActivityNetwork activityNetwork = new ActivityNetwork(new ArrayList<RowEmpcpd>(combined_TrioList), mixedNetwork);
+		
 
 	}
 

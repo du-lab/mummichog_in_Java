@@ -28,16 +28,16 @@ public class EmpiricalCompound {
 	private Map<String, String> ions;
 	private Map<String, String> row_to_ion;
 	private MassFeature mzFeature_of_highest_statistic;
-	
+
 	private final static Logger LOGGER = Logger.getLogger(EmpiricalCompound.class.getName());
 
 	public EmpiricalCompound(List<List<String>> listOfFeatures) {
 		this.listOfFeatures = listOfFeatures;
 		this.massfeature_rows = new ArrayList<String>();
 		this.chosen_compounds = new ArrayList<String>();
-		this.ions = new HashMap<String,String>();
-		this.row_to_ion= new HashMap<String,String>();
-		this.compounds=new ArrayList<String>();
+		this.ions = new HashMap<String, String>();
+		this.row_to_ion = new HashMap<String, String>();
+		this.compounds = new ArrayList<String>();
 		// Sorting the list of features
 		Collections.sort(this.listOfFeatures, (a, b) -> a.get(1).compareTo(b.get(1)));
 		this.str_row_ion = this.make_str_row_ion();
@@ -47,7 +47,6 @@ public class EmpiricalCompound {
 		this.evidence_score = 0;
 		this.primary_ion_present = false;
 		this.statistic = 0;
-		
 
 	}
 
@@ -91,7 +90,7 @@ public class EmpiricalCompound {
 			this.primary_ion_present = true;
 
 		for (String ion : this.ions.keySet()) {
-			if(Constants.dict_weight_adduct.containsKey(ion))
+			if (Constants.dict_weight_adduct.containsKey(ion))
 				this.evidence_score = this.evidence_score + Constants.dict_weight_adduct.get(ion);
 		}
 
@@ -223,6 +222,98 @@ public class EmpiricalCompound {
 
 	public void setMzFeature_of_highest_statistic(MassFeature mzFeature_of_highest_statistic) {
 		this.mzFeature_of_highest_statistic = mzFeature_of_highest_statistic;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((chosen_compounds == null) ? 0 : chosen_compounds.hashCode());
+		result = prime * result + ((compounds == null) ? 0 : compounds.hashCode());
+		result = prime * result + ((eId == null) ? 0 : eId.hashCode());
+		result = prime * result + evidence_score;
+		result = prime * result + ((face_compound == null) ? 0 : face_compound.hashCode());
+		result = prime * result + ((ions == null) ? 0 : ions.hashCode());
+		result = prime * result + ((listOfFeatures == null) ? 0 : listOfFeatures.hashCode());
+		result = prime * result + ((massfeature_rows == null) ? 0 : massfeature_rows.hashCode());
+		result = prime * result
+				+ ((mzFeature_of_highest_statistic == null) ? 0 : mzFeature_of_highest_statistic.hashCode());
+		result = prime * result + ((primary_ion_present == null) ? 0 : primary_ion_present.hashCode());
+		result = prime * result + ((row_to_ion == null) ? 0 : row_to_ion.hashCode());
+		result = prime * result + statistic;
+		result = prime * result + ((str_row_ion == null) ? 0 : str_row_ion.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EmpiricalCompound other = (EmpiricalCompound) obj;
+		if (chosen_compounds == null) {
+			if (other.chosen_compounds != null)
+				return false;
+		} else if (!chosen_compounds.equals(other.chosen_compounds))
+			return false;
+		if (compounds == null) {
+			if (other.compounds != null)
+				return false;
+		} else if (!compounds.equals(other.compounds))
+			return false;
+		if (eId == null) {
+			if (other.eId != null)
+				return false;
+		} else if (!eId.equals(other.eId))
+			return false;
+		if (evidence_score != other.evidence_score)
+			return false;
+		if (face_compound == null) {
+			if (other.face_compound != null)
+				return false;
+		} else if (!face_compound.equals(other.face_compound))
+			return false;
+		if (ions == null) {
+			if (other.ions != null)
+				return false;
+		} else if (!ions.equals(other.ions))
+			return false;
+		if (listOfFeatures == null) {
+			if (other.listOfFeatures != null)
+				return false;
+		} else if (!listOfFeatures.equals(other.listOfFeatures))
+			return false;
+		if (massfeature_rows == null) {
+			if (other.massfeature_rows != null)
+				return false;
+		} else if (!massfeature_rows.equals(other.massfeature_rows))
+			return false;
+		if (mzFeature_of_highest_statistic == null) {
+			if (other.mzFeature_of_highest_statistic != null)
+				return false;
+		} else if (!mzFeature_of_highest_statistic.equals(other.mzFeature_of_highest_statistic))
+			return false;
+		if (primary_ion_present == null) {
+			if (other.primary_ion_present != null)
+				return false;
+		} else if (!primary_ion_present.equals(other.primary_ion_present))
+			return false;
+		if (row_to_ion == null) {
+			if (other.row_to_ion != null)
+				return false;
+		} else if (!row_to_ion.equals(other.row_to_ion))
+			return false;
+		if (statistic != other.statistic)
+			return false;
+		if (str_row_ion == null) {
+			if (other.str_row_ion != null)
+				return false;
+		} else if (!str_row_ion.equals(other.str_row_ion))
+			return false;
+		return true;
 	}
 
 }
