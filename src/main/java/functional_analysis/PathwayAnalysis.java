@@ -132,8 +132,32 @@ public class PathwayAnalysis {
 		}
 		
 		this.resultListOfPathways=get_adjust_p_by_permutations(fet_tested_pathways);
-		Collections.sort(this.resultListOfPathways, (a, b) -> Double.compare(a.getAdjust_p(),b.getAdjust_p()));
+	// For Debugging
+	//	printMinMax();
 		
+		Collections.sort(this.resultListOfPathways, (a, b) -> Double.compare(a.getAdjust_p(),b.getAdjust_p()));
+		System.out.println("Pathway Analysis Completed");
+		
+	}
+	
+	// This function is for debugging only
+	void printMinMax() {
+	double min=+1000.0;
+	double max =-1000.0;
+	
+	for(MetabolicPathway mp: this.resultListOfPathways) {
+		if(mp.getAdjust_p()>max){
+			max=mp.getAdjust_p();
+		}
+		
+		if(mp.getAdjust_p()<min) {
+			min=mp.getAdjust_p();
+		}
+	}
+	
+	System.out.println("Max value is " + max);
+	System.out.println("Min values is " + min);
+	
 	}
 	
 	double[] giveDoubleArray(List<Double> input) {
@@ -149,6 +173,7 @@ public class PathwayAnalysis {
 		this.do_permutations(pathways, Integer.parseInt(this.paradict.get("permutation")));
 		
 		if(this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
+	//	if(true) {
 			// TODO need to correct vector fit
 			List<Double> vectorToFit=new ArrayList<Double>();
 			for(Double d: this.permutationRecord) {
@@ -164,7 +189,7 @@ public class PathwayAnalysis {
 			for( MetabolicPathway mp: pathways) {
 				mp.setAdjust_p(this.calculatePValue(mp.getpEase(), this.permutationRecord));
 			}
-		}	
+		}
 		return pathways;
 	}
 	
@@ -173,9 +198,10 @@ public class PathwayAnalysis {
 		List<Double> total_scores= new ArrayList<Double>();
 		total_scores.add(x);
 		total_scores.addAll(record);
-		Collections.sort(total_scores, Collections.reverseOrder());
-		double d = total_scores.size();
-		return (total_scores.indexOf(x) +1/d);
+	//	Collections.sort(total_scores, Collections.reverseOrder());
+		Collections.sort(total_scores);
+		double d = total_scores.size() + 1.0;
+		return (total_scores.indexOf(x) +1)/d;
 
 	}
 	
@@ -186,11 +212,13 @@ public class PathwayAnalysis {
 		List <EmpiricalCompound> queryEmpriricalCompunds= new ArrayList<EmpiricalCompound>();
 		
 		int n=this.mixedNetwork.getSignificant_features().size();
-		
+		System.out.println();
 		for(int i=0;i<numOfPerm;i++) {
 			//Why this 
 			//sys.stdout.write( ' ' + str(ii + 1))
             //sys.stdout.flush()
+			System.out.print(" "+(i+1));
+			queryEmpriricalCompunds.clear();
 			randomTrioList=this.mixedNetwork.batch_rowindex_EmpCpd_Cpd(ReservoirSampling.selectKItems(this.mixedNetwork.getMzrows(), n));
 			for(RowEmpcpd row: randomTrioList) {
 				queryEmpriricalCompunds.add(row.getEmpiricalCompound());
