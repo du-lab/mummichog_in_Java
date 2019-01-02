@@ -53,7 +53,8 @@ public class InputUserData {
 		List<String> linesOfFile = new ArrayList<String>();
 		BufferedReader buf = null;
 		try {
-			buf = new BufferedReader(new FileReader("./src/main/java/input.txt"));
+		//	buf = new BufferedReader(new FileReader("./src/main/java/input.txt"));
+			buf = new BufferedReader(new FileReader(this.paradict.get("input")));
 			System.out.println(System.getProperty("user.dir"));
 			String lineJustFetched = null;
 			while (true) {
