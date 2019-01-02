@@ -202,7 +202,7 @@ public class PathwayAnalysis {
 		total_scores.addAll(record);
 		// Collections.sort(total_scores, Collections.reverseOrder());
 		Collections.sort(total_scores);
-		double d = total_scores.size() + 1.0;
+		double d = record.size() + 1.0;
 		return (total_scores.indexOf(x) + 1) / d;
 
 	}
@@ -211,7 +211,7 @@ public class PathwayAnalysis {
 
 		LOGGER.info("Resampling " + numOfPerm + "permutations to estimate background ...");
 		List<RowEmpcpd> randomTrioList;
-		List<EmpiricalCompound> queryEmpriricalCompunds = new ArrayList<EmpiricalCompound>();
+		Set<EmpiricalCompound> queryEmpriricalCompunds = new HashSet<EmpiricalCompound>();
 
 		int n = this.mixedNetwork.getSignificant_features().size();
 		System.out.println();
@@ -227,7 +227,7 @@ public class PathwayAnalysis {
 				queryEmpriricalCompunds.add(row.getEmpiricalCompound());
 			}
 			//
-			this.permutationRecord.addAll(this.calculate_permutation_value(queryEmpriricalCompunds, pathways));
+			this.permutationRecord.addAll(this.calculate_permutation_value(new ArrayList<EmpiricalCompound>(queryEmpriricalCompunds), pathways));
 		}
 		System.out.println();
 		LOGGER.info("Pathway background is estimated on " + this.permutationRecord.size() + " random pathway values");
