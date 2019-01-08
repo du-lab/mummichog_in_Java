@@ -15,6 +15,7 @@ public class Constants {
 	public static final int SEARCH_STEPS = 4;
 	public static final int MODULE_SIZE_LIMIT = 100;
 	public static final double SIGNIFICANCE_CUTOFF = 0.05;
+	public static final double CUTOFF_AVE_CONN=0.5;
 	
 	//TBD
 	//		MASS_RANGE = (50, 2000)

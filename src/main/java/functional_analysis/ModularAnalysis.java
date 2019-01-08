@@ -242,8 +242,13 @@ public class ModularAnalysis {
 		LOGGER.info("User data yield " + this.modulesFromSignificantFeaures.size() + " network modules");
 
 		if (this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
+	//	if (true) {
 			// Need a gamma function here
 			GammaDistribution gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
+			System.out.println("Scale of distribution " + gammaDistribution.getScale());
+			System.out.println("Entropy  "+ gammaDistribution.entropy());
+			System.out.println("Shape" + gammaDistribution.getShape());
+			System.out.println("Mean of Distribution" + gammaDistribution.mean());
 			for (MModule mod : this.modulesFromSignificantFeaures) {
 				mod.setpValue((1 - gammaDistribution.cdf(mod.getActivityScore())));
 			}

@@ -171,7 +171,7 @@ public class PathwayAnalysis {
 		this.do_permutations(pathways, Integer.parseInt(this.paradict.get("permutation")));
 
 		if (this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
-		//	if(true) {
+	//		if(true) {
 			// TODO need to correct vector fit
 			List<Double> vectorToFit = new ArrayList<Double>();
 			for (Double d : this.permutationRecord) {
@@ -183,6 +183,10 @@ public class PathwayAnalysis {
 			}
 
 			GammaDistribution gammaDistribution = new GammaDistribution(giveDoubleArray(vectorToFit));
+			System.out.println("Scale of distribution " + gammaDistribution.getScale());
+			System.out.println("Entropy  "+ gammaDistribution.entropy());
+			System.out.println("Shape" + gammaDistribution.getShape());
+			System.out.println("Mean of Distribution" + gammaDistribution.mean());
 			for (MetabolicPathway mp : pathways) {
 				mp.setAdjust_p((1 - gammaDistribution.cdf(-1 * Math.log10(mp.getpEase()))));
 			}
@@ -274,10 +278,14 @@ public class PathwayAnalysis {
 				overlapEmpiricalCompounds = Sets.union(overlapEmpiricalCompounds, mp.getOverlapEmpiricalCompunds());
 			}
 		}
+		List<EmpiricalCompound> checkList = new ArrayList<EmpiricalCompound>(overlapEmpiricalCompounds);
 
 		for (RowEmpcpd row : this.trioList) {
-			if (overlapEmpiricalCompounds.contains(row.getEmpiricalCompound())
+			
+			if (checkList.contains(row.getEmpiricalCompound())
 					&& this.mixedNetwork.getSignificant_features().contains(row.getRow())) {
+	//		if (compareEmpCmpd(row.getEmpiricalCompound(),overlapEmpiricalCompounds)
+	//				&& this.mixedNetwork.getSignificant_features().contains(row.getRow())) {
 				row.getEmpiricalCompound().update_chosen_cpds(row.getCompound());
 				row.getEmpiricalCompound().designate_face_cpd();
 				result.add(row);
@@ -286,5 +294,6 @@ public class PathwayAnalysis {
 		return result;
 
 	}
+
 
 }
