@@ -190,12 +190,6 @@ public class ModularAnalysis {
 			}
 		}
 
-//		//approach 3
-//		Set<DefaultEdge> edgst= new HashSet<DefaultEdge>();
-//		for(String v: vertices) {
-//			edgst.addAll(this.network.edgesOf(v));
-//		}
-
 		return result;
 	}
 
@@ -244,7 +238,19 @@ public class ModularAnalysis {
 		if (this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
 	//	if (true) {
 			// Need a gamma function here
-			GammaDistribution gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
+		//	Collections.sort(this.permutationScores);
+			GammaDistribution gammaDistribution;
+			try {
+				gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
+			}catch(Exception e) {
+				for(int i=0;i<this.permutationScores.size();i++) {
+					if(this.permutationScores.get(i)<=0.0) {
+						this.permutationScores.remove(i);
+						this.permutationScores.add(0.00000000000000000000000000000001);
+					}
+				}
+				gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
+			}
 			System.out.println("Scale of distribution " + gammaDistribution.getScale());
 			System.out.println("Entropy  "+ gammaDistribution.entropy());
 			System.out.println("Shape" + gammaDistribution.getShape());
@@ -258,6 +264,15 @@ public class ModularAnalysis {
 			}
 
 		}
+		
+//		// This is for testing
+//		System.out.println("Sno "+"Activity Score "+ "P Value");
+//		int i=0;
+//		for(MModule md :this.modulesFromSignificantFeaures ) {
+//			i++;
+//			System.out.print(i+"\t"+md.getActivityScore() +"\t"+md.getpValue());
+//			System.out.println();
+//		}
 
 		this.topModules = new ArrayList<MModule>();
 		for (MModule module : this.modulesFromSignificantFeaures) {
