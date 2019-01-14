@@ -49,7 +49,7 @@ public class ActivityNetwork {
 //	     No modularity requirement for 1 step connected nodes.
 		
 		int expected_size=10;
-		double cutoff_ave_conn =0.5;
+	//	double cutoff_ave_conn =0.5;
 		
 		Graph <String,DefaultEdge> an = new AsSubgraph<String, DefaultEdge>(this.mixedNetwork.getModel().getNetwork(),new HashSet<String>(nodes));
 		
@@ -64,14 +64,14 @@ public class ActivityNetwork {
 				List<List<String>> edges= this.getgraphedges(nodes) ;
 				Graph<String,DefaultEdge> subG2=  getLargestSubgraph(build_network(edges));
 				double conn=this.getAveConnections(subG2);
-				if(an.vertexSet().size()> Constants.MODULE_SIZE_LIMIT || conn> cutoff_ave_conn) {
+				if(an.vertexSet().size()> Constants.MODULE_SIZE_LIMIT || conn> Constants.CUTOFF_AVE_CONN) {
 					Log.info("Activity Network was connected in 2 steps. ");
 					return subG2;
 				}else {
 					edges= this.getgraphedges(new ArrayList<String>(subG2.vertexSet())) ;
 					Graph<String,DefaultEdge> subG3=  getLargestSubgraph(build_network(edges));
 					conn=this.getAveConnections(subG3);
-					if(conn > cutoff_ave_conn) {
+					if(conn > Constants.CUTOFF_AVE_CONN) {
 						LOGGER.info( "Activity Network was connected in 3 steps");
 						return subG3;
 					}else {
