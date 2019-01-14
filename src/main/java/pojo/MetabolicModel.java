@@ -15,7 +15,6 @@ public class MetabolicModel {
 	 private List<MetabolicPathwayPOJO> metabolic_pathways;
 	
 	 private Map<String,Compound> compounds;
-	// private String compounds;
 	 private Map<String,String> dict_cpds_def;
 	 private Map<String,List<String>> cpd2pathways;
 	 private Map<String,String> edge2enzyme;
@@ -71,42 +70,6 @@ public class MetabolicModel {
 	public void setEdge2enzyme(Map<String, String> edge2enzyme) {
 		this.edge2enzyme = edge2enzyme;
 	}
-	
-//	public MetabolicModel(Map<String, String> edge2rxn, String version, List<MetabolicRxns> metabolic_rxns,
-//			List<List<String>> cpd_edges, List<MetabolicPathway> metabolic_pathways, Map<String, Compound> compounds,
-//			Map<String, String> dict_cpds_def, Map<String, List<String>> cpd2pathways, Map<String, String> edge2enzyme,
-//			Map<String, Float> dic_cpds_mass) {
-//		super();
-//		this.edge2rxn = edge2rxn;
-//		this.version = version;
-//		this.metabolic_rxns = metabolic_rxns;
-//		this.cpd_edges = cpd_edges;
-//		this.metabolic_pathways = metabolic_pathways;
-//		setCompounds(compounds);
-//		this.dict_cpds_def = dict_cpds_def;
-//		this.cpd2pathways = cpd2pathways;
-//		this.edge2enzyme = edge2enzyme;
-//		this.dic_cpds_mass = dic_cpds_mass;
-//	}
-	
-	
-//	@Override
-//	public String toString() {
-//		return "MetabolicModel [edge2rxn=" + edge2rxn + ", version=" + version + ", metabolic_rxns=" + metabolic_rxns
-//				+ ", cpd_edges=" + cpd_edges + ", metabolic_pathways=" + metabolic_pathways + ", Compounds=" + Compounds
-//				+ ", dict_cpds_def=" + dict_cpds_def + ", cpd2pathways=" + cpd2pathways + ", edge2enzyme=" + edge2enzyme
-//				+ ", dic_cpds_mass=" + dic_cpds_mass + "]";
-//	}
-	
-//	@Override
-//	public String toString() {
-//		return "MetabolicModel [edge2rxn=" + edge2rxn + ", version=" + version + ", metabolic_rxns=" + metabolic_rxns
-//				+ ", cpd_edges=" + cpd_edges + ", metabolic_pathways=" + metabolic_pathways
-//				+ ", dict_cpds_def=" + dict_cpds_def + ", cpd2pathways=" + cpd2pathways + ", edge2enzyme=" + edge2enzyme
-//				+ ", dic_cpds_mass=" + dic_cpds_mass + "]";
-//	}
-//	
-	
 	
 	public MetabolicModel() {
 		

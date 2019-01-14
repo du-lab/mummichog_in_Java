@@ -103,13 +103,6 @@ public class ModularAnalysis {
 		List<List<String>> temp_edges = new ArrayList<List<String>>();
 		Graph<String, DefaultEdge> newNetwork = null;
 
-//		//Getting list of compds from the triolist to create Mmodule
-//		List<String> cpds = new ArrayList<String>();
-//		
-//		for (RowEmpcpd rec :significant_Trios) {
-//			cpds.add(rec.getCompound());
-//		}
-
 		try {
 
 			for (int i = 0; i < Constants.SEARCH_STEPS; i++) {
@@ -131,15 +124,6 @@ public class ModularAnalysis {
 					seeds = new ArrayList<String>(newNetwork.vertexSet());
 
 				}
-
-				// Code to generate Connected Components of a graph
-//			 ConnectivityInspector<String, DefaultEdge> scAlg =new ConnectivityInspector<>(newNetwork);
-//			 List<Set<String>> stronglyConnectedSubgraphs =scAlg.connectedSets();
-//			        for (int i = 0; i < stronglyConnectedSubgraphs.size(); i++) {
-//			            if(3<stronglyConnectedSubgraphs.get(i).size() && stronglyConnectedSubgraphs.get(i).size()<Constants.MODULE_SIZE_LIMIT) {
-//			            	
-//			            }
-//			        }
 
 				// Code to generate Connected Components of a graph
 				BiconnectivityInspector<String, DefaultEdge> scAlg = new BiconnectivityInspector<>(newNetwork);
@@ -178,10 +162,9 @@ public class ModularAnalysis {
 
 	List<List<String>> getgraphedges(List<String> vertices) {
 		List<List<String>> result = new ArrayList<List<String>>();
-		// Maybe the edges should be counted even if they are connected to just one
+		// the edges should be counted even if they are connected to just one
 		// vertex
 
-		// approach 2
 		for (DefaultEdge ed : this.network.edgeSet()) {
 			if (vertices.contains(this.network.getEdgeSource(ed))
 					|| vertices.contains(this.network.getEdgeTarget(ed))) {
@@ -237,8 +220,6 @@ public class ModularAnalysis {
 
 		if (this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
 	//	if (true) {
-			// Need a gamma function here
-		//	Collections.sort(this.permutationScores);
 			GammaDistribution gammaDistribution;
 			try {
 				gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
@@ -251,10 +232,10 @@ public class ModularAnalysis {
 				}
 				gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
 			}
-			System.out.println("Scale of distribution " + gammaDistribution.getScale());
-			System.out.println("Entropy  "+ gammaDistribution.entropy());
-			System.out.println("Shape" + gammaDistribution.getShape());
-			System.out.println("Mean of Distribution" + gammaDistribution.mean());
+//			System.out.println("Scale of distribution " + gammaDistribution.getScale());
+//			System.out.println("Entropy  "+ gammaDistribution.entropy());
+//			System.out.println("Shape" + gammaDistribution.getShape());
+//			System.out.println("Mean of Distribution" + gammaDistribution.mean());
 			for (MModule mod : this.modulesFromSignificantFeaures) {
 				mod.setpValue((1 - gammaDistribution.cdf(mod.getActivityScore())));
 			}

@@ -21,10 +21,6 @@ import resources.Constants;
 
 public class ActivityNetwork {
 
-//	Tally cpds responsible for significant pathways and modules,
-//  and build an acitvity network to represent top story in the data.
-//  Remove singletons in network. Try no more than 3 steps. AN can get too big or too small.
-
 	private DataMeetModel mixedNetwork;
 	private Graph<String, DefaultEdge> network;
 	private Graph<String,DefaultEdge> activityNetwork;
@@ -45,11 +41,10 @@ public class ActivityNetwork {
 	
 	public Graph<String,DefaultEdge> build_Activity_Network(List<String> nodes) {
 		
-//		 Get a network with good connections in no more than 3 steps.
-//	     No modularity requirement for 1 step connected nodes.
+		/*	 Get a network with good connections in no more than 3 steps.
+	     No modularity requirement for 1 step connected nodes. */
 		
 		int expected_size=10;
-	//	double cutoff_ave_conn =0.5;
 		
 		Graph <String,DefaultEdge> an = new AsSubgraph<String, DefaultEdge>(this.mixedNetwork.getModel().getNetwork(),new HashSet<String>(nodes));
 		
@@ -86,7 +81,6 @@ public class ActivityNetwork {
 	
 	public Graph<String,DefaultEdge> getLargestSubgraph(Graph<String,DefaultEdge> an) {
 	
-     //   connected_component_subgraphs likely to return sorted subgraphs. Just to be sure here.
 		BiconnectivityInspector<String, DefaultEdge> scAlg = new BiconnectivityInspector<>(an);
 		Set<Graph<String, DefaultEdge>> stronglyConnectedSubgraphs = scAlg.getConnectedComponents();
 		List <Graph<String,DefaultEdge>> connectedComponents = new ArrayList<Graph<String,DefaultEdge>>(stronglyConnectedSubgraphs);

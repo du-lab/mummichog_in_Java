@@ -64,9 +64,6 @@ public class UserDataClass {
 			i+=2;
 		}
 		
-//		for(String k: opts.keySet()) {
-//		System.out.println("Key is --> "+k+ " " +"value is " +  opts.get(k));
-//		}
 		
 		return cli_options(opts);
 		

@@ -67,7 +67,6 @@ public class DataMeetModel {
 		Map<Integer, List<List<String>>> IonCpdTree = new HashMap<Integer, List<List<String>>>();
 
 		for (String key1 : this.model.getMetabolicModel().getCompounds().keySet()) {
-		// trying another if condition	if (this.model.getMetabolicModel().getCompounds().get(key1).getMw() != 0.0) {
 			if (this.model.getMetabolicModel().getCompounds().containsKey(key1)) {
 				for (String ion : this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().keySet()) {
 					List<List<String>> cpdTreeList = null;
@@ -89,9 +88,6 @@ public class DataMeetModel {
 						 IonCpdTree.put(new Integer(this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion).intValue()), cpdTreeList);
 						}
 					}
-				//	if (cpdTreeList != null) {
-				//		IonCpdTree.put(this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion).intValue(), cpdTreeList);
-				//	}
 				}
 			}
 		}
@@ -132,8 +128,6 @@ public class DataMeetModel {
 				}
 			}
 		}
-
-		// print ("Got %d cpd2mzFeatures" %len(cpd2mzFeatures))
 		return cpd2mzFeatures;
 
 	}
@@ -196,10 +190,6 @@ public class DataMeetModel {
 				resultMap.put(ec.getStr_row_ion(), ec);
 			}
 		}
-		// TODO Add Log Here
-		// print ("Got %d merged ListOfEmpiricalCompounds" %len(mydict))
-		
-		//return (List<EmpiricalCompound>) resultMap.values();
 
 		return new ArrayList<EmpiricalCompound>(resultMap.values());
 	}
@@ -246,9 +236,6 @@ public class DataMeetModel {
 				result.add(ec);
 			}
 		}
-		// TODO Add Log here
-		// print ("Got %d final ListOfEmpiricalCompounds"
-		// %len(ListOfEmpiricalCompounds))
 		return result;
 
 	}

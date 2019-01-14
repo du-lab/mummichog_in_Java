@@ -40,22 +40,5 @@ public class MetabolicPathwayPOJO {
 	public void setName(String name) {
 		this.name = name;
 	}
-//	public MetabolicPathway(List<String> cpds, List<String> rxns, List<String> ecs, String id, String name) {
-//		super();
-//		this.cpds = cpds;
-//		this.rxns = rxns;
-//		this.ecs = ecs;
-//		this.id = id;
-//		this.name = name;
-//	}
-//	@Override
-//	public String toString() {
-//		return "MetabolicPathway [cpds=" + cpds + ", rxns=" + rxns + ", ecs=" + ecs + ", id=" + id + ", name=" + name
-//				+ "]";
-//	}
-//	
-//public MetabolicPathway() {
-//		
-//	}
 	
 }

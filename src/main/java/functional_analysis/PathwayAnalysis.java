@@ -1,6 +1,5 @@
 package functional_analysis;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
-import pojo.CPD2mzFeatures;
 import pojo.MetabolicPathwayPOJO;
 import Models.MetabolicPathway;
 import getuserdata.DataMeetModel;
@@ -21,7 +19,6 @@ import getuserdata.EmpiricalCompound;
 import net.maizegenetics.stats.statistics.FisherExact;
 import pojo.RowEmpcpd;
 import resources.Constants;
-import smile.data.AttributeDataset.Row;
 import smile.stat.distribution.GammaDistribution;
 import utils.ReservoirSampling;
 
@@ -42,13 +39,12 @@ public class PathwayAnalysis {
 
 	public PathwayAnalysis(DataMeetModel mixedNetowrk, List<MetabolicPathwayPOJO> pathways) {
 		this.mixedNetwork = mixedNetowrk;
-		this.network = this.mixedNetwork.getModel().getNetwork();
+		this.setNetwork(this.mixedNetwork.getModel().getNetwork());
 		this.paradict = this.mixedNetwork.getData().getParadict();
 		this.pathways = this.getPathways(pathways);
 		this.significantEmpiricalCompounds = new HashSet<EmpiricalCompound>();
 		this.permutationRecord = new ArrayList<Double>();
 		this.resultListOfPathways = new ArrayList<MetabolicPathway>();
-		// need to figure out the data type resultListOfPathways = []
 
 		this.trioList = mixedNetowrk.getTrioList();
 		for (RowEmpcpd rw : this.trioList) {
@@ -73,7 +69,6 @@ public class PathwayAnalysis {
 			metabolicPathway.setEcnum(li.getEcs().size());
 			metabolicPathway.setCpds(li.getCpds());
 			metabolicPathway.setCpd_num(li.getCpds().size());
-			// P.adjusted_p = '' Not sure what this is in the original code
 			metabolicPathway.setAdjust_p(0.0);
 			metabolicPathway.setEmpiricalCompounds(this.get_empiricalCompounds_by_cpds(metabolicPathway.getCpds()));
 			result.add(metabolicPathway);
@@ -112,10 +107,6 @@ public class PathwayAnalysis {
 			int epcdNum = mp.getEmpSize();
 			if (overlapSize > 0) {
 				int nonneg = total_feature_num + overlapSize - epcdNum - query_set_size;
-
-				// Perform Fisher Exact Test
-				// p_FET = stats.fisher_exact([[overlap_size, query_set_size - overlap_size],
-				// [ecpd_num - overlap_size, negneg]], 'greater')[1]
 				mp.setpFet(FisherExact.getInstance(20000).getRightTailedP(overlapSize, (query_set_size - overlapSize),
 						(epcdNum - overlapSize), nonneg));
 
@@ -134,8 +125,16 @@ public class PathwayAnalysis {
 		// printMinMax();
 
 		Collections.sort(this.resultListOfPathways, (a, b) -> Double.compare(a.getAdjust_p(), b.getAdjust_p()));
-		System.out.println("Pathway Analysis Completed");
-
+		
+//		System.out.println("Sno "+"Name "+"PFet "+"PAdjusted");
+//		int i=0;
+//		for(MetabolicPathway path: this.resultListOfPathways) {
+//			i++;
+//			System.out.print(i+"	"+path.getName()+"	"+path.getpFet()+"	"+path.getAdjust_p());
+//			System.out.println();
+//		}
+//		
+		LOGGER.info("Pathway Analysis Completed");
 	}
 
 	// This function is for debugging only
@@ -172,7 +171,6 @@ public class PathwayAnalysis {
 
 		if (this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
 	//		if(true) {
-			// TODO need to correct vector fit
 			List<Double> vectorToFit = new ArrayList<Double>();
 			for (Double d : this.permutationRecord) {
 				double rescal=-1 * Math.log10(d);
@@ -204,7 +202,6 @@ public class PathwayAnalysis {
 		List<Double> total_scores = new ArrayList<Double>();
 		total_scores.add(x);
 		total_scores.addAll(record);
-		// Collections.sort(total_scores, Collections.reverseOrder());
 		Collections.sort(total_scores);
 		double d = record.size() + 1.0;
 		return (total_scores.indexOf(x) + 1) / d;
@@ -220,9 +217,6 @@ public class PathwayAnalysis {
 		int n = this.mixedNetwork.getSignificant_features().size();
 		System.out.println();
 		for (int i = 0; i < numOfPerm; i++) {
-			// Why this
-			// sys.stdout.write( ' ' + str(ii + 1))
-			// sys.stdout.flush()
 			System.out.print(" " + (i + 1));
 			queryEmpriricalCompunds.clear();
 			randomTrioList = this.mixedNetwork
@@ -243,6 +237,7 @@ public class PathwayAnalysis {
 		List<Double> result = new ArrayList<Double>();
 		int querySetSize = queryEmpriricalCompunds.size();
 		int totalFeatures = this.totalNnumberEmpiricalCompounds;
+		@SuppressWarnings("rawtypes")
 		Set overlapCompunds;
 
 		for (MetabolicPathway mp : pathways) {
@@ -254,10 +249,6 @@ public class PathwayAnalysis {
 			if (overlapSize > 0) {
 				int nonneg = totalFeatures + overlapSize - epcdNum - querySetSize;
 
-				//  Perform Fisher Exact Test
-				// p_FET = stats.fisher_exact([[overlap_size, query_set_size - overlap_size],
-				// [ecpd_num - overlap_size, negneg]], 'greater')[1]
-				// double pval=0;
 				result.add(FisherExact.getInstance(20000).getRightTailedP(overlapSize, (querySetSize - overlapSize),
 						(epcdNum - overlapSize), nonneg));
 			} else {
@@ -284,8 +275,6 @@ public class PathwayAnalysis {
 			
 			if (checkList.contains(row.getEmpiricalCompound())
 					&& this.mixedNetwork.getSignificant_features().contains(row.getRow())) {
-	//		if (compareEmpCmpd(row.getEmpiricalCompound(),overlapEmpiricalCompounds)
-	//				&& this.mixedNetwork.getSignificant_features().contains(row.getRow())) {
 				row.getEmpiricalCompound().update_chosen_cpds(row.getCompound());
 				row.getEmpiricalCompound().designate_face_cpd();
 				result.add(row);
@@ -293,6 +282,14 @@ public class PathwayAnalysis {
 		}
 		return result;
 
+	}
+
+	public Graph<String, DefaultEdge> getNetwork() {
+		return network;
+	}
+
+	public void setNetwork(Graph<String, DefaultEdge> network) {
+		this.network = network;
 	}
 
 

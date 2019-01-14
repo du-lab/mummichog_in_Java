@@ -18,7 +18,6 @@ public class Network {
 
 	private int numOfNodes;
 	private int numOfEdges;
-	//Coordinates for Nodes
 	private Map<String,Integer> crd;
 	private List<String> nodes;
 	private List<List<String>> edges;

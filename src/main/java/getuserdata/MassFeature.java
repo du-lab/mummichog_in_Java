@@ -32,7 +32,6 @@ public class MassFeature {
 		this.retention_time=retention_time;
 		this.p_value=p_value;
 		this.statistic=statistic;
-		// No need to provide default value as empty to string. 
 		this.compoundID_from_user=compoundID_from_user;
 		this.is_significant=false;
 		this.peak_quality=0;

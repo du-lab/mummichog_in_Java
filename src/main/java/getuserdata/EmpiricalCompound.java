@@ -23,7 +23,6 @@ public class EmpiricalCompound {
 	private Boolean primary_ion_present;
 	private int statistic;
 	private List<String> compounds;
-	// Not sure about this variable. Check with Alex.
 	private List<String> massfeature_rows;
 	private Map<String, String> ions;
 	private Map<String, String> row_to_ion;

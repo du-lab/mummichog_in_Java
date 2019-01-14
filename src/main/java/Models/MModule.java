@@ -51,12 +51,6 @@ public class MModule {
 
 	int get_num_EmpCpd(List <RowEmpcpd> trioList) {
 		Set<EmpiricalCompound> nodesForCount = new HashSet<EmpiricalCompound>();
-
-//		for (String node : this.graph.vertexSet()) {
-//			if (trioList.contains(node)) {
-//				count++;
-//			}
-//		}
 		
 		for(RowEmpcpd node : trioList) {
 			if(this.graph.vertexSet().contains(node.getCompound())) {
@@ -107,7 +101,6 @@ public class MModule {
 		this.QValue = 2 * m * (Math.sqrt(this.graph.vertexSet().size())) / expected;
 	}
 
-	// Run this function to confirm the behavior.
 	void shave(List<String> seed_cpds) {
 
 		List<String> nonSeed = new ArrayList<String>();
@@ -145,17 +138,6 @@ public class MModule {
 		}
 	}
 
-	// Yet to complete this function. Need to understand what's happening.
-//		void export_network_txt( met_model, filename) {
-//	        
-//	        String s = "SOURCE\tTARGET\tENZYMES\n";
-//	        for (DefaultEdge e : this.graph.edgeset()) {
-//	            s += e[0] + '\t' + e[1] + '\t' + met_model.edge2enzyme.get(','.join(sorted(e)), '') + '\n';
-//	        }
-//	        out = open(filename, 'w')
-//	        out.write(s)
-//	        out.close()
-//		}
 
 	public List<String> returnCompunds(List <RowEmpcpd>trioList){
 		List<String> result = new ArrayList<String>();
