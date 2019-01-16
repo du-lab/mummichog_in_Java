@@ -30,7 +30,7 @@ public class DataMeetModel {
 	private List<String> mzrows;
 	private List<RowEmpcpd> trioList;
 	private List<RowEmpcpd> hitTriosList;
-	
+
 	private final static Logger LOGGER = Logger.getLogger(DataMeetModel.class.getName());
 
 	public DataMeetModel(MetabolicNetwork theoreticalModel, InputUserData userData) {
@@ -61,6 +61,18 @@ public class DataMeetModel {
 
 	public Map<Integer, List<List<String>>> build_cpdindex(String msmode) {
 
+		/*
+		 * indexed Compound list, to speed up m/z matching. Limited to MASS_RANGE
+		 * (default 50 ~ 2000 dalton).
+		 * 
+		 * 
+		 * changing from adduct_function to wanted_adduct_list dictionary
+		 * 
+		 * wanted_adduct_list['pos_default'] = ['M[1+]', 'M+H[1+]', 'M+2H[2+]',
+		 * 'M(C13)+H[1+]', 'M(C13)+2H[2+]', 'M+Na[1+]', 'M+H+Na[2+]', 'M+HCOONa[1+]'
+		 * 
+		 */
+
 		List<String> wanted_ions = Constants.wanted_adduct_list.get(msmode);
 		// Declaring IonCpdTree as a Map rather than an array of Lists as it will be a
 		// waste of memory
@@ -71,21 +83,27 @@ public class DataMeetModel {
 				for (String ion : this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().keySet()) {
 					List<List<String>> cpdTreeList = null;
 					if (wanted_ions.contains(ion)
-							&& Constants.MASS_RANGE.get(0) < this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion)
-							&& Constants.MASS_RANGE.get(1) > this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion)) {
-					//	cpdTreeList = new ArrayList<List<String>>();
+							&& Constants.MASS_RANGE.get(0) < this.model.getMetabolicModel().getCompounds().get(key1)
+									.getAdducts().get(ion)
+							&& Constants.MASS_RANGE.get(1) > this.model.getMetabolicModel().getCompounds().get(key1)
+									.getAdducts().get(ion)) {
+						// cpdTreeList = new ArrayList<List<String>>();
 						List<String> temp = new ArrayList<String>();
 						temp.add(key1);
 						temp.add(ion);
-						temp.add(this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion).toString());
+						temp.add(this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion)
+								.toString());
 						// new added
-						
-						if(IonCpdTree.containsKey(this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion).intValue())) {
-							IonCpdTree.get(new Integer(this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion).intValue())).add(temp);
-						}else {
-						 cpdTreeList = new ArrayList<List<String>>();
-						 cpdTreeList.add(temp);
-						 IonCpdTree.put(new Integer(this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion).intValue()), cpdTreeList);
+
+						if (IonCpdTree.containsKey(this.model.getMetabolicModel().getCompounds().get(key1).getAdducts()
+								.get(ion).intValue())) {
+							IonCpdTree.get(new Integer(this.model.getMetabolicModel().getCompounds().get(key1)
+									.getAdducts().get(ion).intValue())).add(temp);
+						} else {
+							cpdTreeList = new ArrayList<List<String>>();
+							cpdTreeList.add(temp);
+							IonCpdTree.put(new Integer(this.model.getMetabolicModel().getCompounds().get(key1)
+									.getAdducts().get(ion).intValue()), cpdTreeList);
 						}
 					}
 				}
@@ -95,6 +113,7 @@ public class DataMeetModel {
 	}
 
 	public Map<String, MassFeature> build_rowindex(List<MassFeature> listOfMassFeatures) {
+		// Index list of MassFeatures by row# in input data
 
 		Map<String, MassFeature> rowDict = new HashMap<String, MassFeature>();
 
@@ -107,12 +126,22 @@ public class DataMeetModel {
 	}
 
 	public List<EmpiricalCompound> match_all_to_all() {
+		/*
+		 * Here, we produce mapping dictionaries for mzFeatures to theoretical ions
+		 * Compounds to mzFeatures Then, EmpiricalCompounds are determined within
+		 * Compound matched mzFeatures, considering retention time.
+		 */
 		this.match_to_mzFeatures();
 		this.cpd2mzFeatures = this.index_Compounds_to_mzFeatures();
 		return this.compound_to_EmpiricalCompounds();
 	}
 
 	public Map<String, List<CPD2mzFeatures>> index_Compounds_to_mzFeatures() {
+		/*
+		 * compound ID - mzFeatures run after self.__match_to_mzFeatures__() L:
+		 * (compoundID, ion, mass) cpd2mzFeatures[compoundID] = [(ion, mass, mzFeature),
+		 * ...]
+		 */
 
 		Map<String, List<CPD2mzFeatures>> cpd2mzFeatures = new HashMap<String, List<CPD2mzFeatures>>();
 		List<CPD2mzFeatures> listOfFeatures = null;
@@ -123,7 +152,7 @@ public class DataMeetModel {
 					listOfFeatures = new ArrayList<CPD2mzFeatures>();
 					listOfFeatures.add(new CPD2mzFeatures(li.get(1), Double.parseDouble(li.get(2)), mf));
 					cpd2mzFeatures.put(li.get(0), listOfFeatures);
-				}else {
+				} else {
 					cpd2mzFeatures.get(li.get(0)).add(new CPD2mzFeatures(li.get(1), Double.parseDouble(li.get(2)), mf));
 				}
 			}
@@ -133,6 +162,13 @@ public class DataMeetModel {
 	}
 
 	public List<EmpiricalCompound> compound_to_EmpiricalCompounds() {
+		/*
+		 * EmpiricalCompounds are constructed in this function. First splitting features
+		 * matching to same compound by retention time; then merging those matched to
+		 * same m/z features. run after self.index_Compounds_to_mzFeatures()
+		 * 
+		 * 
+		 */
 		List<EmpiricalCompound> listOfEmpiricalCompounds = new ArrayList<EmpiricalCompound>();
 		for (String k : this.cpd2mzFeatures.keySet()) {
 			listOfEmpiricalCompounds.addAll(this.split_Compound(k, this.cpd2mzFeatures.get(k), this.rtime_tolerance));
@@ -143,6 +179,18 @@ public class DataMeetModel {
 
 	public List<EmpiricalCompound> split_Compound(String compoundID, List<CPD2mzFeatures> list_match_mzFeatures,
 			Double rtime_tolerance) {
+		/*
+		 * Determine EmpiricalCompounds among the ions matched to a Compound; return
+		 * list of EmpiricalCompounds (not final, but initiated here).
+		 * 
+		 * The retention time is grouped by tolerance value; This method should be
+		 * updated in the future.
+		 * 
+		 * input data format: cpd2mzFeatures[compoundID] = list_match_mzFeatures =
+		 * [(ion, mass, mzFeature), ...]
+		 * 
+		 * 
+		 */
 		List<List<String>> all_mzFeatures = new ArrayList<List<String>>();
 		List<EmpiricalCompound> eCompounds = new ArrayList<EmpiricalCompound>();
 		List<List<String>> temp = new ArrayList<List<String>>();
@@ -157,21 +205,23 @@ public class DataMeetModel {
 			all_mzFeatures.add(tempList);
 		}
 
-		Collections.sort(all_mzFeatures, (a, b) -> Double.compare(Double.parseDouble(a.get(0)),Double.parseDouble(b.get(0))));
+		Collections.sort(all_mzFeatures,
+				(a, b) -> Double.compare(Double.parseDouble(a.get(0)), Double.parseDouble(b.get(0))));
 
 		temp.add(all_mzFeatures.get(0));
-		// This should not work for only one element in all_mzFeatures. The loop should run till size-2 .
-		if(all_mzFeatures.size()>1){
-		for (int i = 0; i < all_mzFeatures.size()-1; i++) {
-			if ((Double.parseDouble(all_mzFeatures.get(i + 1).get(0))
-					- Double.parseDouble(all_mzFeatures.get(i).get(0))) < rtime_tolerance) {
-				temp.add(all_mzFeatures.get(i+1));
-			} else {
-				eCompounds.add(new EmpiricalCompound(temp));
-				temp.clear();
-				temp.add(all_mzFeatures.get(i+1));
+		// This should not work for only one element in all_mzFeatures. The loop should
+		// run till size-2 .
+		if (all_mzFeatures.size() > 1) {
+			for (int i = 0; i < all_mzFeatures.size() - 1; i++) {
+				if ((Double.parseDouble(all_mzFeatures.get(i + 1).get(0))
+						- Double.parseDouble(all_mzFeatures.get(i).get(0))) < rtime_tolerance) {
+					temp.add(all_mzFeatures.get(i + 1));
+				} else {
+					eCompounds.add(new EmpiricalCompound(temp));
+					temp.clear();
+					temp.add(all_mzFeatures.get(i + 1));
+				}
 			}
-		}
 		}
 
 		eCompounds.add(new EmpiricalCompound(temp));
@@ -180,6 +230,13 @@ public class DataMeetModel {
 	}
 
 	public List<EmpiricalCompound> merge_EmpiricalCompounds(List<EmpiricalCompound> listOfEmpiricalCompounds) {
+		/*
+		 * If ion/mzFeatures are the same, merge EmpiricalCompounds
+		 * EmpiricalCompounds.join() adds Compounds
+		 * 
+		 * Because EmpiricalCompounds.str_row_ion uses mzFeatures sorted by row_number,
+		 * this is
+		 */
 
 		Map<String, EmpiricalCompound> resultMap = new HashMap<String, EmpiricalCompound>();
 
@@ -201,6 +258,10 @@ public class DataMeetModel {
 	}
 
 	public List<List<String>> __match_mz_ion__(Double mz, Map<Integer, List<List<String>>> IonCpdTree) {
+
+		/*
+		 * L: (compoundID, ion, mass) return ions matched to m/z
+		 */
 
 		int floor = mz.intValue();
 		double mztol = Constants.mz_tolerance(mz, this.data.getParadict().get("mode"));
@@ -229,7 +290,8 @@ public class DataMeetModel {
 			ec.seteId("E" + count);
 			ec.get_mzFeature_of_highest_statistic(this.rowDict);
 			count++;
-			if (this.data.getParadict().containsKey("force_primary_ion") && this.data.getParadict().get("force_primary_ion").equalsIgnoreCase("true")) {
+			if (this.data.getParadict().containsKey("force_primary_ion")
+					&& this.data.getParadict().get("force_primary_ion").equalsIgnoreCase("true")) {
 				if (ec.getPrimary_ion_present())
 					result.add(ec);
 			} else {
@@ -276,20 +338,25 @@ public class DataMeetModel {
 	}
 
 	public List<RowEmpcpd> batch_rowindex_EmpCpd_Cpd(List<String> significant_features) {
+		/*
+		 * Batch matching from row feature to Ecpds; Use trio data structure,
+		 * (M.row_number, EmpiricalCompounds, Cpd). Will be used to map for both sig
+		 * list and permutation lists.
+		 */
 		List<RowEmpcpd> result = new ArrayList<RowEmpcpd>();
-	//	int count_match=0;
+		// int count_match=0;
 		for (String sf : significant_features) {
-			if(this.rowindex_to_EmpiricalCompounds.containsKey(sf)) {
-	//			count_match++;
-			for (EmpiricalCompound ec : this.rowindex_to_EmpiricalCompounds.get(sf)) {
-				for (String cpd : ec.getCompounds()) {
-					result.add(new RowEmpcpd(sf, ec, cpd));
+			if (this.rowindex_to_EmpiricalCompounds.containsKey(sf)) {
+				// count_match++;
+				for (EmpiricalCompound ec : this.rowindex_to_EmpiricalCompounds.get(sf)) {
+					for (String cpd : ec.getCompounds()) {
+						result.add(new RowEmpcpd(sf, ec, cpd));
 
+					}
 				}
 			}
-			}
 		}
-	//	System.out.println("Count match is " + count_match);
+		// System.out.println("Count match is " + count_match);
 		return result;
 	}
 

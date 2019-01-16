@@ -5,6 +5,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/*
+ *  Data model, to store info per input feature
+    row_number is used as unique ID. A string like "row23" is used instead of integer for two reasons:
+    to enforce unique IDs in string not in number, and for clarity throughout the code;
+    to have human friendly numbering, starting from 1 not 0
+ */
+
 public class MassFeature {
 	
 	private String row_number;

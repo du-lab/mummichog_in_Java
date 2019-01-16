@@ -22,6 +22,18 @@ import resources.Constants;
 import smile.stat.distribution.GammaDistribution;
 import utils.ReservoirSampling;
 
+/*
+ * From matched features to pathway enrichment analysis.
+    Using mfn human pathways for now.
+    p-value is from Fisher exact test, 
+    adjusted by resampling method in 
+    GF Berriz, OD King, B Bryant, C Sander & FP Roth. 
+    Characterizing gene sets with FuncAssociate. 
+    Bioinformatics 19(18):2502-2504 (2003)
+    
+    "Adjusted_p" is not an accurate term. It's rather an empirical p-value.
+ */
+
 public class PathwayAnalysis {
 
 	private DataMeetModel mixedNetwork;
@@ -38,6 +50,10 @@ public class PathwayAnalysis {
 	private final static Logger LOGGER = Logger.getLogger(PathwayAnalysis.class.getName());
 
 	public PathwayAnalysis(DataMeetModel mixedNetowrk, List<MetabolicPathwayPOJO> pathways) {
+		/*
+		 * mixedNetwork contains both user input data, metabolic model, and mapping btw
+		 * (mzFeature, EmpiricalCompound, cpd)
+		 */
 		this.mixedNetwork = mixedNetowrk;
 		this.setNetwork(this.mixedNetwork.getModel().getNetwork());
 		this.paradict = this.mixedNetwork.getData().getParadict();
@@ -57,6 +73,12 @@ public class PathwayAnalysis {
 	}
 
 	public List<MetabolicPathway> getPathways(List<MetabolicPathwayPOJO> pathways) {
+
+		/*
+		 * convert pathways in JSON formats (import from .py) to list of Pathway class.
+		 * Adding list of EmpiricalCompounds per pathway, which reflects the measured
+		 * pathway coverage.
+		 */
 
 		List<MetabolicPathway> result = new ArrayList<MetabolicPathway>();
 		MetabolicPathway metabolicPathway = null;
@@ -79,6 +101,10 @@ public class PathwayAnalysis {
 	}
 
 	public Set<EmpiricalCompound> get_empiricalCompounds_by_cpds(List<String> cpds) {
+		/*
+		 * Mapping cpds to empirical_cpds. Also used for counting EmpCpds for each
+		 * Pathway.
+		 */
 		Set<EmpiricalCompound> result = new HashSet<EmpiricalCompound>();
 		List<EmpiricalCompound> empiricalCompoundlist = null;
 		for (String cpd : cpds) {
@@ -92,6 +118,15 @@ public class PathwayAnalysis {
 	}
 
 	public void cpd_enrich_test() {
+		/*
+		 * Fisher Exact Test in cpd space, after correction of detected cpds. Fisher
+		 * exact test is using scipy.stats.fisher_exact for right-tail p-value: >>>
+		 * stats.fisher_exact([[12, 5], [29, 2]], 'greater')[1] 0.99452520602188932
+		 * 
+		 * query size is now counted by EmpiricalCompounds. adjusted_p should be model
+		 * p-value, not fdr. This returns a list of Pathway instances, with p-values.
+		 * 
+		 */
 		List<MetabolicPathway> fet_tested_pathways = new ArrayList<MetabolicPathway>();
 		Set<EmpiricalCompound> qset = new HashSet<EmpiricalCompound>();
 		qset.addAll(this.significantEmpiricalCompounds);
@@ -125,7 +160,7 @@ public class PathwayAnalysis {
 		// printMinMax();
 
 		Collections.sort(this.resultListOfPathways, (a, b) -> Double.compare(a.getAdjust_p(), b.getAdjust_p()));
-		
+
 //		System.out.println("Sno "+"Name "+"PFet "+"PAdjusted");
 //		int i=0;
 //		for(MetabolicPathway path: this.resultListOfPathways) {
@@ -167,22 +202,27 @@ public class PathwayAnalysis {
 	}
 
 	public List<MetabolicPathway> get_adjust_p_by_permutations(List<MetabolicPathway> pathways) {
+		/*
+		 * EASE score is used as a basis for adjusted p-values, as mummichog encourages
+		 * bias towards more hits/pathway. pathways were already updated by first round
+		 * of Fisher exact test, to avoid redundant calculations
+		 */
+
 		this.do_permutations(pathways, Integer.parseInt(this.paradict.get("permutation")));
 
 		if (this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
-	//		if(true) {
 			List<Double> vectorToFit = new ArrayList<Double>();
 			for (Double d : this.permutationRecord) {
-				double rescal=-1 * Math.log10(d);
-				if(rescal<= 0.0) {
-					rescal=0.00000000000000000000000000000000000000000000001;
+				double rescal = -1 * Math.log10(d);
+				if (rescal <= 0.0) {
+					rescal = 0.00000000000000000000000000000000000000000000001;
 				}
 				vectorToFit.add(rescal);
 			}
 
 			GammaDistribution gammaDistribution = new GammaDistribution(giveDoubleArray(vectorToFit));
 			System.out.println("Scale of distribution " + gammaDistribution.getScale());
-			System.out.println("Entropy  "+ gammaDistribution.entropy());
+			System.out.println("Entropy  " + gammaDistribution.entropy());
 			System.out.println("Shape" + gammaDistribution.getShape());
 			System.out.println("Mean of Distribution" + gammaDistribution.mean());
 			for (MetabolicPathway mp : pathways) {
@@ -198,6 +238,7 @@ public class PathwayAnalysis {
 	}
 
 	double calculatePValue(double x, List<Double> record) {
+		// calculate p-value based on the rank in record of permutation p-values
 
 		List<Double> total_scores = new ArrayList<Double>();
 		total_scores.add(x);
@@ -209,6 +250,11 @@ public class PathwayAnalysis {
 	}
 
 	public void do_permutations(List<MetabolicPathway> pathways, int numOfPerm) {
+		/*
+		 * Modified from Berriz et al 2003 method. After collecting p-values from
+		 * resampling, do a Gamma fit.
+		 * 
+		 */
 
 		LOGGER.info("Resampling " + numOfPerm + "permutations to estimate background ...");
 		List<RowEmpcpd> randomTrioList;
@@ -225,7 +271,8 @@ public class PathwayAnalysis {
 				queryEmpriricalCompunds.add(row.getEmpiricalCompound());
 			}
 			//
-			this.permutationRecord.addAll(this.calculate_permutation_value(new ArrayList<EmpiricalCompound>(queryEmpriricalCompunds), pathways));
+			this.permutationRecord.addAll(this
+					.calculate_permutation_value(new ArrayList<EmpiricalCompound>(queryEmpriricalCompunds), pathways));
 		}
 		System.out.println();
 		LOGGER.info("Pathway background is estimated on " + this.permutationRecord.size() + " random pathway values");
@@ -234,6 +281,10 @@ public class PathwayAnalysis {
 
 	public List<Double> calculate_permutation_value(List<EmpiricalCompound> queryEmpriricalCompunds,
 			List<MetabolicPathway> pathways) {
+		/*
+		 * calculate the FET p-value for all pathways. But not save anything to Pathway
+		 * instances.
+		 */
 		List<Double> result = new ArrayList<Double>();
 		int querySetSize = queryEmpriricalCompunds.size();
 		int totalFeatures = this.totalNnumberEmpiricalCompounds;
@@ -272,7 +323,7 @@ public class PathwayAnalysis {
 		List<EmpiricalCompound> checkList = new ArrayList<EmpiricalCompound>(overlapEmpiricalCompounds);
 
 		for (RowEmpcpd row : this.trioList) {
-			
+
 			if (checkList.contains(row.getEmpiricalCompound())
 					&& this.mixedNetwork.getSignificant_features().contains(row.getRow())) {
 				row.getEmpiricalCompound().update_chosen_cpds(row.getCompound());
@@ -291,6 +342,5 @@ public class PathwayAnalysis {
 	public void setNetwork(Graph<String, DefaultEdge> network) {
 		this.network = network;
 	}
-
 
 }

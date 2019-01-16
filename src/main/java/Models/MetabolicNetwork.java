@@ -10,6 +10,8 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 
+/* Metabolite-centric metabolic model 
+Theoretical model, not containing user data */
 public class MetabolicNetwork {
 
 	private MetabolicModel metabolicModel;
@@ -18,6 +20,15 @@ public class MetabolicNetwork {
 	private Set<String> total_cpd_list;
 
 	public MetabolicNetwork(MetabolicModel model) {
+	/*	
+		 Initiation of metabolic network model.
+	        Building Compound index.
+	        Parsing input files.
+	        Matching m/z - Compound.
+	        
+	        MetabolicModel['Compounds'] are subset of cpds in network/pathways with mw.
+	        Not all in total_cpd_list has mw. */
+		
 		this.metabolicModel = model;
 		this.network = this.build_network(this.metabolicModel.getCpd_edges());
 		this.total_cpd_list = this.network.vertexSet();

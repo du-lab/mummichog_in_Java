@@ -49,6 +49,7 @@ public class Orchestration {
 		
 		MetabolicNetwork theoreticalModel=null;
 		
+		//specify which metabolic mode
 		if(human.contains(userdata.getParadict().get("network"))){
 			
 			theoreticalModel = new MetabolicNetwork(rm.getHuman_model_mfn());
@@ -59,10 +60,11 @@ public class Orchestration {
 		
 		DataMeetModel mixedNetwork = new DataMeetModel(theoreticalModel, userdata);
 		
+		//getting a list of Pathway instances, with p-values, in PA.resultListOfPathways
 		PathwayAnalysis pathwayAnalysis = new PathwayAnalysis(mixedNetwork, mixedNetwork.getModel().getMetabolicModel().getMetabolic_pathways());
 		pathwayAnalysis.cpd_enrich_test();
 	
-		
+		// Module analysis, getting a list of Mmodule instances
 		ModularAnalysis modularAnalysis = new ModularAnalysis(mixedNetwork);
 		modularAnalysis.dispatch();
 		

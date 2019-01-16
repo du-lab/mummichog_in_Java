@@ -27,6 +27,12 @@ import resources.Constants;
 import smile.stat.distribution.GammaDistribution;
 import utils.ReservoirSampling;
 
+/*
+ 1) Find modules from input list by connecting paths < 4;
+    compute activity score that combines modularity and enrichment.
+    2) Permutations by randomly selecting features from ref_mzlist;
+    compute p-values based on permutations.
+ */
 public class ModularAnalysis {
 	private DataMeetModel mixedNetwork;
 	private Graph<String, DefaultEdge> network;
@@ -41,6 +47,10 @@ public class ModularAnalysis {
 	private List<MModule> topModules;
 
 	public ModularAnalysis(DataMeetModel mixedNetwork) {
+		/*
+		 * mapping btw (mzfeature, cpd) has to be via ListOfEmpiricalCompounds, so that
+		 * cpd can be tracked back to EmpiricalCompounds
+		 */
 		this.mixedNetwork = mixedNetwork;
 		this.network = mixedNetwork.getModel().getNetwork();
 		this.paradict = mixedNetwork.getData().getParadict();
@@ -53,6 +63,10 @@ public class ModularAnalysis {
 
 	public void dispatch() {
 
+		/*
+		 * Only real modules are saved in total. Permutated modules are not saved but
+		 * their scores are recorded.
+		 */
 		String s = "\nModular Analysis, using %d permutations ... " + this.paradict.get("permutation");
 		LOGGER.info(s);
 
@@ -64,6 +78,10 @@ public class ModularAnalysis {
 	}
 
 	List<Double> doPermutations(int numOfPermutations) {
+		/*
+		 * Run num_perm permutations on ref featurelist; populate activity scores from
+		 * random modules in self.permuation_mscores
+		 */
 		List<Double> permutationScores = new ArrayList<Double>();
 		int numSignificantFeatures = this.significant_features.size();
 		List<MModule> randomModules;
@@ -90,6 +108,14 @@ public class ModularAnalysis {
 
 	@SuppressWarnings("unchecked")
 	public List<MModule> findModules(List<RowEmpcpd> significant_Trios) {
+		/*
+		 * get connected nodes in up to 4 steps. modules are set of connected subgraphs
+		 * plus split moduels within. A shaving step is applied to remove excessive
+		 * nodes that do not connect seeds (thus Mmodule initiation may reduce graph
+		 * size). A module is only counted if it contains more than one seeds.
+		 * 
+		 * TrioList format: [(M.row_number, EmpiricalCompounds, Cpd), ...]
+		 */
 
 		List<String> seeds = new ArrayList<String>();
 		for (RowEmpcpd row : significant_Trios) {
@@ -215,27 +241,33 @@ public class ModularAnalysis {
 	}
 
 	void rankSignificance() {
+		/*
+		 * compute p-values of modules. Either model based: scores of random modules are
+		 * fitted to a Gamma distribution, p-value is calculated from CDF. Or rank
+		 * based.
+		 */
 		LOGGER.info("\nNull distribution is estimated on " + this.permutationScores.size() + " random modules");
 		LOGGER.info("User data yield " + this.modulesFromSignificantFeaures.size() + " network modules");
 
 		if (this.paradict.get("modeling").equalsIgnoreCase("gamma")) {
-	//	if (true) {
 			GammaDistribution gammaDistribution;
 			try {
 				gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
-			}catch(Exception e) {
-				for(int i=0;i<this.permutationScores.size();i++) {
-					if(this.permutationScores.get(i)<=0.0) {
+			} catch (Exception e) {
+				for (int i = 0; i < this.permutationScores.size(); i++) {
+					if (this.permutationScores.get(i) <= 0.0) {
 						this.permutationScores.remove(i);
 						this.permutationScores.add(0.00000000000000000000000000000001);
 					}
 				}
 				gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
 			}
+
 //			System.out.println("Scale of distribution " + gammaDistribution.getScale());
 //			System.out.println("Entropy  "+ gammaDistribution.entropy());
 //			System.out.println("Shape" + gammaDistribution.getShape());
 //			System.out.println("Mean of Distribution" + gammaDistribution.mean());
+
 			for (MModule mod : this.modulesFromSignificantFeaures) {
 				mod.setpValue((1 - gammaDistribution.cdf(mod.getActivityScore())));
 			}
@@ -245,7 +277,7 @@ public class ModularAnalysis {
 			}
 
 		}
-		
+
 //		// This is for testing
 //		System.out.println("Sno "+"Activity Score "+ "P Value");
 //		int i=0;
@@ -277,6 +309,7 @@ public class ModularAnalysis {
 	}
 
 	double calculatePValue(double x, List<Double> record) {
+		// Calculate p-value based on the rank in record of scores
 
 		List<Double> total_scores = new ArrayList<Double>();
 		total_scores.add(x);
@@ -288,6 +321,10 @@ public class ModularAnalysis {
 	}
 
 	public List<RowEmpcpd> collectHitTrios() {
+		/*
+		 * get [(mzFeature, EmpiricalCompound, cpd),...] for top_modules. Update EmpCpd
+		 * chosen compounds.
+		 */
 		List<RowEmpcpd> result = new ArrayList<RowEmpcpd>();
 		Set<String> overlapCompounds = new HashSet<String>();
 
