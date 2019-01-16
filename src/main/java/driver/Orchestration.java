@@ -28,28 +28,20 @@ public class Orchestration {
 	private final static Logger LOGGER = Logger.getLogger(Orchestration.class.getName());
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-		System.out.println("Hello");
-	//	UserDataClass.dispatcher(args);
-	//	System.out.println("Ends here");
-		
-		System.out.println("Mummichog Code Run Begins");
+		LOGGER.info("Mummichog Code Run Begins");
 		
 		Map<String,String> optDict = UserDataClass.dispatcher(args);
 		
 		InputUserData userdata = new InputUserData(optDict);
 		RealModels rm=null;
 		
-		//Testing reading Json File
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			rm= mapper.readValue(new File("./JSON_metabolicModels.py"), RealModels.class);
-			System.out.println("File read");
+			LOGGER.info("JSON File Read");
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(e.getMessage());
 		}
 		
 		List<String> human= new ArrayList<String>(Arrays.asList("human","hsa", "Human", "human_mfn", "hsa_mfn"));
@@ -57,6 +49,7 @@ public class Orchestration {
 		
 		MetabolicNetwork theoreticalModel=null;
 		
+		//specify which metabolic mode
 		if(human.contains(userdata.getParadict().get("network"))){
 			
 			theoreticalModel = new MetabolicNetwork(rm.getHuman_model_mfn());
@@ -67,10 +60,11 @@ public class Orchestration {
 		
 		DataMeetModel mixedNetwork = new DataMeetModel(theoreticalModel, userdata);
 		
+		//getting a list of Pathway instances, with p-values, in PA.resultListOfPathways
 		PathwayAnalysis pathwayAnalysis = new PathwayAnalysis(mixedNetwork, mixedNetwork.getModel().getMetabolicModel().getMetabolic_pathways());
 		pathwayAnalysis.cpd_enrich_test();
 	
-		
+		// Module analysis, getting a list of Mmodule instances
 		ModularAnalysis modularAnalysis = new ModularAnalysis(mixedNetwork);
 		modularAnalysis.dispatch();
 		

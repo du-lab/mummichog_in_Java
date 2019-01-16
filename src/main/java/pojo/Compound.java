@@ -30,17 +30,6 @@ public class Compound {
 	public void setAdducts(Map<String, Double> adducts) {
 		this.adducts = adducts;
 	}
-//	public Compound(String formula, Double mw, String name, Map<String, Double> adducts) {
-//		super();
-//		this.formula = formula;
-//		this.mw = mw;
-//		this.name = name;
-//		this.adducts = adducts;
-//	}
-//	@Override
-//	public String toString() {
-//		return "Compound [formula=" + formula + ", mw=" + mw + ", name=" + name + ", adducts=" + adducts + "]";
-//	}
 	public Double getMw() {
 		return mw;
 	}

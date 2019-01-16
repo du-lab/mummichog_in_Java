@@ -12,6 +12,20 @@ import org.apache.log4j.Logger;
 
 import resources.Constants;
 
+/*
+    EmpiricalCompound is a computational unit to include 
+    multiple ions that belong to the same metabolite,
+    and isobaric/isomeric metabolites when not distinguished by the mass spec data.
+    Thought to be a tentative metabolite. 
+    Due to false matches, one Compound could have more EmpiricalCompounds
+    
+    In mummichog, this replaces the Mnode class in version 1;
+    and is the compound presentation for Activity network and HTML report.
+    
+    This class serves as in between user-input MassFetaure and theoretical model Compound.
+    
+ */
+
 public class EmpiricalCompound {
 
 	private List<List<String>> listOfFeatures;
@@ -23,7 +37,6 @@ public class EmpiricalCompound {
 	private Boolean primary_ion_present;
 	private int statistic;
 	private List<String> compounds;
-	// Not sure about this variable. Check with Alex.
 	private List<String> massfeature_rows;
 	private Map<String, String> ions;
 	private Map<String, String> row_to_ion;
@@ -32,6 +45,12 @@ public class EmpiricalCompound {
 	private final static Logger LOGGER = Logger.getLogger(EmpiricalCompound.class.getName());
 
 	public EmpiricalCompound(List<List<String>> listOfFeatures) {
+		/*
+		 * Initiation using listOfFeatures = [[retention_time, row_number, ion, mass,
+		 * compoundID], ...] This will be merged and split later to get final set of
+		 * EmpCpds.
+		 */
+
 		this.listOfFeatures = listOfFeatures;
 		this.massfeature_rows = new ArrayList<String>();
 		this.chosen_compounds = new ArrayList<String>();
@@ -51,6 +70,10 @@ public class EmpiricalCompound {
 	}
 
 	public void join(EmpiricalCompound empiricalCompound) {
+		/*
+		 * Join another instance with identical ions. str_row_ion must be the same to be
+		 * joined.
+		 */
 
 		for (String c : empiricalCompound.compounds) {
 			if (!this.compounds.contains(c)) {
@@ -61,7 +84,7 @@ public class EmpiricalCompound {
 	}
 
 	public String make_str_row_ion() {
-
+		// feature order is fixed now after sorting by row_number
 		StringBuilder sb = new StringBuilder();
 		for (List<String> list : listOfFeatures) {
 			sb.append(list.get(1)).append("_").append(list.get(2)).append(";");
@@ -103,10 +126,19 @@ public class EmpiricalCompound {
 	}
 
 	public void designate_face_cpd() {
+		/*
+		 * When there are more than one compounds suggested by pathway and module
+		 * analysis, one is arbitrarily designated as "face compound".
+		 */
 		this.face_compound = this.chosen_compounds.get(this.chosen_compounds.size() - 1);
 	}
 
 	public void get_mzFeature_of_highest_statistic(Map<String, MassFeature> dict_mzFeature) {
+		/*
+		 * Take highest abs(statistic) among all matched ions, which will give statistic
+		 * value for downstream output.
+		 */
+
 		List<MassFeature> all = new ArrayList<MassFeature>();
 
 		for (String row : this.massfeature_rows) {

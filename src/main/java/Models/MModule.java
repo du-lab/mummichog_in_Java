@@ -1,6 +1,11 @@
 package Models;
 
 import java.util.ArrayList;
+
+/*  Metabolites by their connection in metabolic network.
+    A module is a subgraph, while modularity is calculated in 
+    the background of reference hsanet. */
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -25,10 +30,13 @@ public class MModule {
 	private double pValue;
 
 	public MModule(Graph<String, DefaultEdge> network, Graph<String, DefaultEdge> subgraph, List <RowEmpcpd>trioList) {
-		// TrioList is the third element lost of the original triolist.
+		/*  TrioList (seeds) format: [(M.row_number, EmpiricalCompounds, Cpd), ...]
+        to keep tracking of where the EmpCpd came from (mzFeature).
+        
+        network is the total parent metabolic network */
+		
 		this.network = network;
 		this.graph = subgraph;
-		// check this function
 		this.shave(returnCompunds(trioList));
 		this.num_ref_nodes = this.network.vertexSet().size();
 		this.num_ref_edges = this.network.edgeSet().size();
@@ -39,6 +47,8 @@ public class MModule {
 	
 	
 	String makeNodeStr() {
+		/* create an identifier using nodes in sorted order */
+		
 		StringBuilder result = new StringBuilder();
 		List<String>nodeSet= new ArrayList<String>();
 		nodeSet.addAll(new ArrayList<String>(this.graph.vertexSet()));
@@ -51,12 +61,6 @@ public class MModule {
 
 	int get_num_EmpCpd(List <RowEmpcpd> trioList) {
 		Set<EmpiricalCompound> nodesForCount = new HashSet<EmpiricalCompound>();
-
-//		for (String node : this.graph.vertexSet()) {
-//			if (trioList.contains(node)) {
-//				count++;
-//			}
-//		}
 		
 		for(RowEmpcpd node : trioList) {
 			if(this.graph.vertexSet().contains(node.getCompound())) {
@@ -69,6 +73,21 @@ public class MModule {
 	}
 
 	double activity_score(List <RowEmpcpd> seed_cpds, int num_EmpCpd) {
+		
+		/*
+		 A * (Ns/Nm)
+        A = Newman-Girvan modularity score
+        Ns = number of input cpds in module M
+        Nm = number of total cpds in M
+        Ns/Nm can be corrected as (Ns/total input size)/(Nm/network size), however,
+        this normalization factor holds the same in permutations. 
+        Use 100 here for network size/total input size.
+        
+        To reduce bias towards larger modules in Q:
+        np.sqrt(len(seed_cpds)/Nm) * 
+        
+        Ns is now controlled by number of empiricalCompounds
+        */
 
 		Float nm = (float) this.graph.vertexSet().size();
 
@@ -82,6 +101,9 @@ public class MModule {
 	}
 
 	void compute_modularity() {
+		
+		/* To compute Newman-Girvan modularity for a single module,
+        in reference to the whole network. */
 
 		int m = this.num_ref_edges;
 		double expected = 0;
@@ -98,6 +120,8 @@ public class MModule {
 	}
 
 	void test_compute_modularity() {
+		/* Alternative modularity measure as 
+        edges in module over all edges on the same nodes */
 
 		int m = this.graph.edgeSet().size();
 		double expected = 0;
@@ -107,8 +131,10 @@ public class MModule {
 		this.QValue = 2 * m * (Math.sqrt(this.graph.vertexSet().size())) / expected;
 	}
 
-	// Run this function to confirm the behavior.
 	void shave(List<String> seed_cpds) {
+		
+		/* shave off nodes that do not connect seeds, i.e.
+        any node with degree = 1 and is not a seed, iteratively. */
 
 		List<String> nonSeed = new ArrayList<String>();
 		List<String> excessive = new ArrayList<String>();
@@ -145,17 +171,6 @@ public class MModule {
 		}
 	}
 
-	// Yet to complete this function. Need to understand what's happening.
-//		void export_network_txt( met_model, filename) {
-//	        
-//	        String s = "SOURCE\tTARGET\tENZYMES\n";
-//	        for (DefaultEdge e : this.graph.edgeset()) {
-//	            s += e[0] + '\t' + e[1] + '\t' + met_model.edge2enzyme.get(','.join(sorted(e)), '') + '\n';
-//	        }
-//	        out = open(filename, 'w')
-//	        out.write(s)
-//	        out.close()
-//		}
 
 	public List<String> returnCompunds(List <RowEmpcpd>trioList){
 		List<String> result = new ArrayList<String>();

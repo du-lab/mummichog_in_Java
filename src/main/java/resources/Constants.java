@@ -24,6 +24,7 @@ public class Constants {
 	public static final double RETENTION_TIME_TOLERANCE_FRAC = 0.01;    //fraction of total retention time
 	public static final double PROTON = 1.00727646677;
 	
+	//currency metaboites of ubiquitous presence
 	public static List<String> currList = new ArrayList<String>(Arrays.asList("C00001", "C00080", "C00007", "C00006", "C00005",
 			"C0000", "C00004", "C00002", "C00013", "C00008", "C00009", "C00011", "G11113", "H2O", "H+", "Oxygen",
 			"NADP+", "NADPH", "NAD+", "NADH", "ATP", "Pyrophosphate", "ADP", "Orthophosphate", "CO2"));

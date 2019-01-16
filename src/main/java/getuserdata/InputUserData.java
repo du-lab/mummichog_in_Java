@@ -25,7 +25,7 @@ public class InputUserData {
 	private Double max_mz;
 
 	private final static Logger LOGGER = Logger.getLogger(InputUserData.class.getName());
-	
+
 	public InputUserData(Map<String, String> paradict) {
 		this.paradict = paradict;
 		this.header_fields = new ArrayList<String>();
@@ -50,12 +50,14 @@ public class InputUserData {
 	}
 
 	public void read() {
+		/*
+		 * Read input feature lists to ListOfMassFeatures. Row_numbers (rowii+1) are
+		 * used as primary ID.
+		 */
 		List<String> linesOfFile = new ArrayList<String>();
 		BufferedReader buf = null;
 		try {
-		//	buf = new BufferedReader(new FileReader("./src/main/java/input.txt"));
 			buf = new BufferedReader(new FileReader(this.paradict.get("input")));
-			System.out.println(System.getProperty("user.dir"));
 			String lineJustFetched = null;
 			while (true) {
 				lineJustFetched = buf.readLine();
@@ -66,12 +68,12 @@ public class InputUserData {
 				}
 			}
 		} catch (IOException e) {
-			// Add Log here
+			LOGGER.error(e.getMessage());
 		} finally {
 			try {
 				buf.close();
 			} catch (IOException e) {
-				// Add Log here
+				LOGGER.error(e.getMessage());
 			}
 		}
 		text_to_ListOfMassFeatures(linesOfFile, "\t");
@@ -87,7 +89,7 @@ public class InputUserData {
 		List<String[]> excluded_list = new ArrayList<String[]>();
 		for (String l : textLines) {
 			i++;
-			if(l.contains("nan")) {
+			if (l.contains("nan")) {
 				continue;
 			}
 			lineArray = l.split(delimiter);
@@ -97,8 +99,8 @@ public class InputUserData {
 			}
 			if (Constants.MASS_RANGE.get(0) < Double.parseDouble(lineArray[0])
 					&& Constants.MASS_RANGE.get(1) > Double.parseDouble(lineArray[0])) {
-				System.out.println(l);
-				
+				// System.out.println(l);
+
 				this.listOfMassFeatures.add(new MassFeature("row" + i, Double.parseDouble(lineArray[0]),
 						Double.parseDouble(lineArray[1]), Double.parseDouble(lineArray[2]),
 						Double.parseDouble(lineArray[3]), CompoundID_from_user));
@@ -108,8 +110,7 @@ public class InputUserData {
 		}
 
 		if (excluded_list.size() > 0) {
-			// Log Something here
-			System.out.println("Some elements were excluded");
+			LOGGER.info("Some elements were excluded");
 		}
 
 	}
@@ -117,16 +118,21 @@ public class InputUserData {
 	public void check_redundant(List<String> textLines) {
 		Set<String> setofLines = new HashSet<String>(textLines);
 		if (setofLines.size() != textLines.size()) {
-			// Add Log here. Adding SYSO for now
-			System.out.println("There are redundant lines in the file");
+			LOGGER.info("There are redundant lines in the file");
 		}
 
 	}
 
 	public void determine_significant_list() {
+		/*
+		 * For single input file format in ver 2. The significant list, input_mzlist,
+		 * should be a subset of ref_mzlist, determined either by user specificed
+		 * --cutoff, or by automated cutoff close to a p-value hotspot, in which case,
+		 * paradict['cutoff'] is updated accordingly. 
+		 */
 		if (!this.paradict.containsKey("cutoff")
 				|| (this.paradict.containsKey("cutoff") && Double.parseDouble(this.paradict.get("cutoff")) == 0.0)) {
-		
+
 			List<MassFeature> newList = new ArrayList<MassFeature>(this.listOfMassFeatures);
 			// Lamda function to sort list of mass features on p values
 			Collections.sort(newList, (a, b) -> a.getP_value().compareTo(b.getP_value()));
@@ -172,19 +178,14 @@ public class InputUserData {
 
 		}
 		for (MassFeature mf : this.listOfMassFeatures) {
-				if (mf.getP_value() < Double.parseDouble(this.paradict.get("cutoff"))) {
-					mf.setIs_significant(true);
-					if (this.input_featurelist == null) {
-						this.input_featurelist = new ArrayList<String>();
-					}
-					input_featurelist.add(mf.getRow_number());
+			if (mf.getP_value() < Double.parseDouble(this.paradict.get("cutoff"))) {
+				mf.setIs_significant(true);
+				if (this.input_featurelist == null) {
+					this.input_featurelist = new ArrayList<String>();
 				}
+				input_featurelist.add(mf.getRow_number());
 			}
-		
-
-//		//logging needs to be done
-//		print_and_loginfo("Using %d features (p < %f) as significant list." 
-//                %(len(self.input_featurelist), self.paradict['cutoff']))  
+		}
 
 	}
 
@@ -234,21 +235,6 @@ public class InputUserData {
 
 	public void setMax_mz(Double max_mz) {
 		this.max_mz = max_mz;
-	}
-
-	// TODO: This is used for reporting
-	private void make_manhattan_plots() {
-
-	}
-
-	// No usage found
-	private void read_from_file() {
-
-	}
-
-	// No Usage Found
-	private void read_from_webform() {
-
 	}
 
 }
