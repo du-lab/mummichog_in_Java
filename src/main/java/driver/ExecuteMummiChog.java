@@ -11,8 +11,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import Models.MetabolicNetwork;
 import functional_analysis.ActivityNetwork;
 import functional_analysis.ModularAnalysis;
@@ -23,16 +23,16 @@ import getuserdata.UserDataClass;
 import pojo.RealModels;
 import pojo.RowEmpcpd;
 
-public class Orchestration {
-	
-	private final static Logger LOGGER = Logger.getLogger(Orchestration.class.getName());
+public class ExecuteMummiChog {
 
-	public static void main(String[] args) {
-		LOGGER.info("Mummichog Code Run Begins");
+	private final static Logger LOGGER = Logger.getLogger(ExecuteMummiChog.class.getName());
+	
+	public void runMummiChog(String inputData, String[] args) {
+LOGGER.info("Mummichog Code Run Begins");
 		
 		Map<String,String> optDict = UserDataClass.dispatcher(args);
 		
-		InputUserData userdata = new InputUserData(optDict,false,"");
+		InputUserData userdata = new InputUserData(optDict,true,inputData);
 		RealModels rm=null;
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -73,8 +73,6 @@ public class Orchestration {
 		combined_TrioList.addAll(pathwayAnalysis.collectHitTrios());
 		combined_TrioList.addAll(modularAnalysis.collectHitTrios());
 		ActivityNetwork activityNetwork = new ActivityNetwork(new ArrayList<RowEmpcpd>(combined_TrioList), mixedNetwork);
-		
-
 	}
-
+	
 }
