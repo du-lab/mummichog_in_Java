@@ -22,6 +22,7 @@ import getuserdata.InputUserData;
 import getuserdata.UserDataClass;
 import pojo.RealModels;
 import pojo.RowEmpcpd;
+import reporting.LocalFileGenerator;
 
 public class Orchestration {
 	
@@ -73,8 +74,10 @@ public class Orchestration {
 		combined_TrioList.addAll(pathwayAnalysis.collectHitTrios());
 		combined_TrioList.addAll(modularAnalysis.collectHitTrios());
 		ActivityNetwork activityNetwork = new ActivityNetwork(new ArrayList<RowEmpcpd>(combined_TrioList), mixedNetwork);
-		
+		@SuppressWarnings("unused")
+		LocalFileGenerator lfg= new LocalFileGenerator(mixedNetwork, pathwayAnalysis, modularAnalysis, activityNetwork, userdata.getParadict().get("outdir"));
 
+	
 	}
 
 }
