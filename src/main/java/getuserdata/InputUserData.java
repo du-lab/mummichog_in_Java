@@ -85,7 +85,7 @@ public class InputUserData {
 		textLines.remove(0);
 		check_redundant(textLines);
 		String[] lineArray;
-		int i = 0;
+		int i = 1;
 		List<String[]> excluded_list = new ArrayList<String[]>();
 		for (String l : textLines) {
 			i++;

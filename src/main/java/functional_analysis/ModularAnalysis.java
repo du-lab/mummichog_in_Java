@@ -39,6 +39,78 @@ public class ModularAnalysis {
 	Map<String, String> paradict;
 	private List<String> ref_featurelist;
 	private List<String> significant_features;
+	public DataMeetModel getMixedNetwork() {
+		return mixedNetwork;
+	}
+
+	public void setMixedNetwork(DataMeetModel mixedNetwork) {
+		this.mixedNetwork = mixedNetwork;
+	}
+
+	public Graph<String, DefaultEdge> getNetwork() {
+		return network;
+	}
+
+	public void setNetwork(Graph<String, DefaultEdge> network) {
+		this.network = network;
+	}
+
+	public Map<String, String> getParadict() {
+		return paradict;
+	}
+
+	public void setParadict(Map<String, String> paradict) {
+		this.paradict = paradict;
+	}
+
+	public List<String> getRef_featurelist() {
+		return ref_featurelist;
+	}
+
+	public void setRef_featurelist(List<String> ref_featurelist) {
+		this.ref_featurelist = ref_featurelist;
+	}
+
+	public List<String> getSignificant_features() {
+		return significant_features;
+	}
+
+	public void setSignificant_features(List<String> significant_features) {
+		this.significant_features = significant_features;
+	}
+
+	public List<RowEmpcpd> getSignificant_Trios() {
+		return significant_Trios;
+	}
+
+	public void setSignificant_Trios(List<RowEmpcpd> significant_Trios) {
+		this.significant_Trios = significant_Trios;
+	}
+
+	public List<Double> getPermutationScores() {
+		return permutationScores;
+	}
+
+	public void setPermutationScores(List<Double> permutationScores) {
+		this.permutationScores = permutationScores;
+	}
+
+	public List<MModule> getModulesFromSignificantFeaures() {
+		return modulesFromSignificantFeaures;
+	}
+
+	public void setModulesFromSignificantFeaures(List<MModule> modulesFromSignificantFeaures) {
+		this.modulesFromSignificantFeaures = modulesFromSignificantFeaures;
+	}
+
+	public List<MModule> getTopModules() {
+		return topModules;
+	}
+
+	public void setTopModules(List<MModule> topModules) {
+		this.topModules = topModules;
+	}
+
 	private List<RowEmpcpd> significant_Trios;
 	// private List<MModule> modules;
 	private final static Logger LOGGER = Logger.getLogger(ModularAnalysis.class.getName());
