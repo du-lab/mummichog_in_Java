@@ -47,6 +47,14 @@ public class PathwayAnalysis {
 	private List<Double> permutationRecord;
 	private List<MetabolicPathway> resultListOfPathways;
 
+	public List<MetabolicPathway> getResultListOfPathways() {
+		return resultListOfPathways;
+	}
+
+	public void setResultListOfPathways(List<MetabolicPathway> resultListOfPathways) {
+		this.resultListOfPathways = resultListOfPathways;
+	}
+
 	private final static Logger LOGGER = Logger.getLogger(PathwayAnalysis.class.getName());
 
 	public PathwayAnalysis(DataMeetModel mixedNetowrk, List<MetabolicPathwayPOJO> pathways) {
@@ -134,8 +142,8 @@ public class PathwayAnalysis {
 		int total_feature_num = this.totalNnumberEmpiricalCompounds;
 
 		for (MetabolicPathway mp : this.pathways) {
-			mp.setOverlapEmpiricalCompunds(Sets.intersection(qset, mp.getEmpiricalCompounds()));
-			mp.setOverlapFeatures(Sets.intersection(qset, mp.getEmpiricalCompounds()));
+			mp.setOverlapEmpiricalCompunds(new ArrayList<EmpiricalCompound>(Sets.intersection(qset, mp.getEmpiricalCompounds())));
+			mp.setOverlapFeatures(new ArrayList<EmpiricalCompound>(Sets.intersection(qset, mp.getEmpiricalCompounds())));
 			mp.setOverlapSize(mp.getOverlapEmpiricalCompunds().size());
 			int overlapSize = mp.getOverlapSize();
 			mp.setEmpSize(mp.getEmpiricalCompounds().size());
@@ -317,7 +325,7 @@ public class PathwayAnalysis {
 
 		for (MetabolicPathway mp : this.resultListOfPathways) {
 			if (mp.getAdjust_p() < Constants.SIGNIFICANCE_CUTOFF) {
-				overlapEmpiricalCompounds = Sets.union(overlapEmpiricalCompounds, mp.getOverlapEmpiricalCompunds());
+				overlapEmpiricalCompounds = Sets.union(new HashSet<EmpiricalCompound>(overlapEmpiricalCompounds), new HashSet<EmpiricalCompound>(mp.getOverlapEmpiricalCompunds()));
 			}
 		}
 		List<EmpiricalCompound> checkList = new ArrayList<EmpiricalCompound>(overlapEmpiricalCompounds);

@@ -22,8 +22,8 @@ public class MetabolicPathway {
 	private int combined_pvalue;
 	private double adjust_p;
 	private Set<EmpiricalCompound> EmpiricalCompounds;
-	private Set<EmpiricalCompound> overlapEmpiricalCompunds;
-	private Set<EmpiricalCompound> overlapFeatures;
+	private List<EmpiricalCompound> overlapEmpiricalCompunds;
+	private List<EmpiricalCompound> overlapFeatures;
 	private int overlapSize;
 	private int empSize;
 	private double pEase;
@@ -40,24 +40,7 @@ public class MetabolicPathway {
 	}
 
 
-	public Set<EmpiricalCompound> getOverlapEmpiricalCompunds() {
-		return overlapEmpiricalCompunds;
-	}
 
-
-	public void setOverlapEmpiricalCompunds(Set<EmpiricalCompound> overlapEmpiricalCompunds) {
-		this.overlapEmpiricalCompunds = overlapEmpiricalCompunds;
-	}
-
-
-	public Set<EmpiricalCompound> getOverlapFeatures() {
-		return overlapFeatures;
-	}
-
-
-	public void setOverlapFeatures(Set<EmpiricalCompound> overlapFeatures) {
-		this.overlapFeatures = overlapFeatures;
-	}
 
 
 	public int getOverlapSize() {
@@ -262,6 +245,26 @@ public class MetabolicPathway {
 
 	public void setpEase(double pEase) {
 		this.pEase = pEase;
+	}
+
+
+	public List<EmpiricalCompound> getOverlapEmpiricalCompunds() {
+		return overlapEmpiricalCompunds;
+	}
+
+
+	public void setOverlapEmpiricalCompunds(List<EmpiricalCompound> overlapEmpiricalCompunds) {
+		this.overlapEmpiricalCompunds = overlapEmpiricalCompunds;
+	}
+
+
+	public List<EmpiricalCompound> getOverlapFeatures() {
+		return overlapFeatures;
+	}
+
+
+	public void setOverlapFeatures(List<EmpiricalCompound> overlapFeatures) {
+		this.overlapFeatures = overlapFeatures;
 	}
 
 
