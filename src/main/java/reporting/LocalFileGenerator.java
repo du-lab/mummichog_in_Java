@@ -27,6 +27,7 @@ import functional_analysis.ModularAnalysis;
 import functional_analysis.PathwayAnalysis;
 import getuserdata.DataMeetModel;
 import getuserdata.EmpiricalCompound;
+import getuserdata.MassFeature;
 
 public class LocalFileGenerator {
 
@@ -316,9 +317,17 @@ public class LocalFileGenerator {
 
 	String createMz_Rows(EmpiricalCompound ec) {
 		StringBuilder result = new StringBuilder();
-		for (List<String> s : ec.getListOfFeatures()) {
-			result.append("(").append(s.get(1)).append(";").append(s.get(3)).append(";").append(s.get(0)).append(")");
-		}
+		for(String row: ec.getMassfeature_rows()) {
+		for(MassFeature mf:this.mixedNetowrk.getData().getListOfMassFeatures() ) {
+			if(mf.getRow_number().equalsIgnoreCase(row)) {
+				result.append("(").append(row).append(";").append(mf.getMz()).append(";").append(mf.getRetention_time()).append(")");
+				break;
+			}
+		}}
+		
+//		for (List<String> s : ec.getListOfFeatures()) {
+//			result.append("(").append(s.get(1)).append(";").append(s.get(3)).append(";").append(s.get(0)).append(")");
+//		}
 		return result.toString();
 	}
 
