@@ -27,6 +27,7 @@ import functional_analysis.ModularAnalysis;
 import functional_analysis.PathwayAnalysis;
 import getuserdata.DataMeetModel;
 import getuserdata.EmpiricalCompound;
+import getuserdata.MassFeature;
 
 public class LocalFileGenerator {
 
@@ -158,7 +159,7 @@ public class LocalFileGenerator {
 		}
 		
 		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
@@ -231,7 +232,7 @@ public class LocalFileGenerator {
 			}
 		}
 		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
@@ -242,7 +243,7 @@ public class LocalFileGenerator {
 			result.append(s.geteId()).append(";");
 		}
 		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
@@ -292,8 +293,8 @@ public class LocalFileGenerator {
 		for (String s : ec.getCompounds()) {
 			result.append(s).append(";");
 		}
-		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+		if (result.length() > 0) {		
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
@@ -303,22 +304,30 @@ public class LocalFileGenerator {
 		for (String s : ec.getCompounds()) {
 			try {
 				result.append("\"").append(this.mixedNetowrk.getModel().getMetabolicModel().getDict_cpds_def().get(s))
-						.append(";").append("\"");
+						.append("\"").append(";");
 			} catch (Exception e) {
 				result.append("").append(";");
 			}
 		}
 		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
 
 	String createMz_Rows(EmpiricalCompound ec) {
 		StringBuilder result = new StringBuilder();
-		for (List<String> s : ec.getListOfFeatures()) {
-			result.append("(").append(s.get(1)).append(";").append(s.get(3)).append(";").append(s.get(0)).append(")");
-		}
+		for(String row: ec.getMassfeature_rows()) {
+		for(MassFeature mf:this.mixedNetowrk.getData().getListOfMassFeatures() ) {
+			if(mf.getRow_number().equalsIgnoreCase(row)) {
+				result.append("(").append(row).append(";").append(mf.getMz()).append(";").append(mf.getRetention_time()).append(")");
+				break;
+			}
+		}}
+		
+//		for (List<String> s : ec.getListOfFeatures()) {
+//			result.append("(").append(s.get(1)).append(";").append(s.get(3)).append(";").append(s.get(0)).append(")");
+//		}
 		return result.toString();
 	}
 

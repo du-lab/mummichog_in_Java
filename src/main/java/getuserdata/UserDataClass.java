@@ -45,7 +45,7 @@ public class UserDataClass {
 			else if (key.equalsIgnoreCase("-o") || key.equalsIgnoreCase("--output")) {
 				result.put("output", opts.get(key).replace(".csv", ""));
 				result.put("outdir",
-						result.get("outdir") + System.currentTimeMillis() + opts.get(key).replace(".csv", ""));
+						 opts.get(key).replace(".csv", ""));
 			} else if (key.equalsIgnoreCase("-f") || key.equalsIgnoreCase("--infile"))
 				result.put("infile", opts.get(key));
 			else {
