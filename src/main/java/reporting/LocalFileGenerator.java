@@ -159,7 +159,7 @@ public class LocalFileGenerator {
 		}
 		
 		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
@@ -232,7 +232,7 @@ public class LocalFileGenerator {
 			}
 		}
 		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
@@ -243,7 +243,7 @@ public class LocalFileGenerator {
 			result.append(s.geteId()).append(";");
 		}
 		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
@@ -293,8 +293,8 @@ public class LocalFileGenerator {
 		for (String s : ec.getCompounds()) {
 			result.append(s).append(";");
 		}
-		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+		if (result.length() > 0) {		
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
@@ -304,13 +304,13 @@ public class LocalFileGenerator {
 		for (String s : ec.getCompounds()) {
 			try {
 				result.append("\"").append(this.mixedNetowrk.getModel().getMetabolicModel().getDict_cpds_def().get(s))
-						.append(";").append("\"");
+						.append("\"").append(";");
 			} catch (Exception e) {
 				result.append("").append(";");
 			}
 		}
 		if (result.length() > 0) {
-			return result.substring(0, result.length() - 2);
+			return result.substring(0, result.length() - 1);
 		}
 		return result.toString();
 	}
