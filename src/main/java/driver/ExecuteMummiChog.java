@@ -20,14 +20,17 @@ import functional_analysis.PathwayAnalysis;
 import getuserdata.DataMeetModel;
 import getuserdata.InputUserData;
 import getuserdata.UserDataClass;
+import pojo.Compound;
 import pojo.RealModels;
 import pojo.RowEmpcpd;
+import reporting.LocalFileGenerator;
+import reporting.MzMineOutput;
 
 public class ExecuteMummiChog {
 
 	private final static Logger LOGGER = Logger.getLogger(ExecuteMummiChog.class.getName());
 	
-	public void runMummiChog(String inputData, String[] args) {
+	public Map<String, List<Compound>> runMummiChog(String inputData, String[] args) {
 LOGGER.info("Mummichog Code Run Begins");
 		
 		Map<String,String> optDict = UserDataClass.dispatcher(args);
@@ -73,6 +76,10 @@ LOGGER.info("Mummichog Code Run Begins");
 		combined_TrioList.addAll(pathwayAnalysis.collectHitTrios());
 		combined_TrioList.addAll(modularAnalysis.collectHitTrios());
 		ActivityNetwork activityNetwork = new ActivityNetwork(new ArrayList<RowEmpcpd>(combined_TrioList), mixedNetwork);
+		@SuppressWarnings("unused")
+		LocalFileGenerator lfg= new LocalFileGenerator(mixedNetwork, pathwayAnalysis, modularAnalysis, activityNetwork, userdata.getParadict().get("outdir"));
+		MzMineOutput mzMine= new MzMineOutput(mixedNetwork);
+		return mzMine.generateMzMineOutput();
 	}
 	
 }
