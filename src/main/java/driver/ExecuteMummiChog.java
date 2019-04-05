@@ -11,8 +11,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import Models.MetabolicNetwork;
 import functional_analysis.ActivityNetwork;
 import functional_analysis.ModularAnalysis;
@@ -20,20 +20,23 @@ import functional_analysis.PathwayAnalysis;
 import getuserdata.DataMeetModel;
 import getuserdata.InputUserData;
 import getuserdata.UserDataClass;
+import pojo.Compound;
+import pojo.MummichogParams;
 import pojo.RealModels;
 import pojo.RowEmpcpd;
 import reporting.LocalFileGenerator;
+import reporting.MzMineOutput;
 
-public class Orchestration {
+public class ExecuteMummiChog {
+
+	private final static Logger LOGGER = Logger.getLogger(ExecuteMummiChog.class.getName());
 	
-	private final static Logger LOGGER = Logger.getLogger(Orchestration.class.getName());
-
-	public static void main(String[] args) {
-		LOGGER.info("Mummichog Code Run Begins");
+	public Map<String, List<Compound>> runMummiChog(String inputData, MummichogParams parameters) {
+LOGGER.info("Mummichog Code Run Begins");
 		
-		Map<String,String> optDict = UserDataClass.dispatcher(args);
+		Map<String,String> optDict = UserDataClass.dispatcher(parameters.generateArgumentString());
 		
-		InputUserData userdata = new InputUserData(optDict,false,"");
+		InputUserData userdata = new InputUserData(optDict,true,inputData);
 		RealModels rm=null;
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -76,8 +79,8 @@ public class Orchestration {
 		ActivityNetwork activityNetwork = new ActivityNetwork(new ArrayList<RowEmpcpd>(combined_TrioList), mixedNetwork);
 		@SuppressWarnings("unused")
 		LocalFileGenerator lfg= new LocalFileGenerator(mixedNetwork, pathwayAnalysis, modularAnalysis, activityNetwork, userdata.getParadict().get("outdir"));
-
-	
+		MzMineOutput mzMine= new MzMineOutput(mixedNetwork);
+		return mzMine.generateMzMineOutput();
 	}
-
+	
 }

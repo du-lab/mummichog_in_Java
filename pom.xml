@@ -2,10 +2,41 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>Mummichog</groupId>
+	<groupId>org.du-lab.Mummichog</groupId>
 	<artifactId>Mummichog</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Mummichog</name>
+	<version>1.0.3</version>
+	
+	 <name>${project.groupId}:${project.artifactId}</name>
+    <description>Java implementation of Mummichog Algorithm</description>
+    <url>https://github.com/du-lab/mummichog_in_Java</url>
+
+    <licenses>
+        <license>
+            <name>GNU General Public Licence v2.0</name>
+            <url>https://www.gnu.org/licences/gpl-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Prashant Madaan</name>
+            <email>pmadaan@uncc.edu</email>
+            <organization>Department of Bioinformatics and Genomics, University of North Carolina at Charlotte</organization>
+            <organizationUrl>http://www.du-lab.org/</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/du-lab/mummichog_in_Java.git</connection>
+        <developerConnection>scm:git:ssh://github.com/du-lab/mummichog_in_Java.git</developerConnection>
+        <url>https://github.com/du-lab/mummichog_in_Java.git/tree/master</url>
+    </scm>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 
 	<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
 	<dependencies>
@@ -59,5 +90,69 @@
 		</dependency>
 
 	</dependencies>
+	
+	 <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+	
 
 </project>

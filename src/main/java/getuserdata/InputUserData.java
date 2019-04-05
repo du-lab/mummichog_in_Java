@@ -26,13 +26,22 @@ public class InputUserData {
 
 	private final static Logger LOGGER = Logger.getLogger(InputUserData.class.getName());
 
-	public InputUserData(Map<String, String> paradict) {
+	public InputUserData(Map<String, String> paradict,boolean integrationRunFlag,String inputData) {
 		this.paradict = paradict;
 		this.header_fields = new ArrayList<String>();
 		this.listOfMassFeatures = new ArrayList<MassFeature>();
 		this.input_featurelist = new ArrayList<String>();
-
-		this.read();
+		
+		if(!integrationRunFlag) {
+			this.read();
+		}else {
+			List<String>inputDataList= new ArrayList<String>();
+			for(String line: inputData.split("\n")) {
+				inputDataList.add(line);
+			}
+			text_to_ListOfMassFeatures(inputDataList, "\t");
+		}
+		
 		this.determine_significant_list();
 
 		this.max_retention_time = 0.0;
