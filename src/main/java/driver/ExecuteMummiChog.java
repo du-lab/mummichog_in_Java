@@ -21,6 +21,7 @@ import getuserdata.DataMeetModel;
 import getuserdata.InputUserData;
 import getuserdata.UserDataClass;
 import pojo.Compound;
+import pojo.MummichogParams;
 import pojo.RealModels;
 import pojo.RowEmpcpd;
 import reporting.LocalFileGenerator;
@@ -30,10 +31,10 @@ public class ExecuteMummiChog {
 
 	private final static Logger LOGGER = Logger.getLogger(ExecuteMummiChog.class.getName());
 	
-	public Map<String, List<Compound>> runMummiChog(String inputData, String[] args) {
+	public Map<String, List<Compound>> runMummiChog(String inputData, MummichogParams parameters) {
 LOGGER.info("Mummichog Code Run Begins");
 		
-		Map<String,String> optDict = UserDataClass.dispatcher(args);
+		Map<String,String> optDict = UserDataClass.dispatcher(parameters.generateArgumentString());
 		
 		InputUserData userdata = new InputUserData(optDict,true,inputData);
 		RealModels rm=null;
