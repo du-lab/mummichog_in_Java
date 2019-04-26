@@ -53,7 +53,7 @@ public class DataMeetModel {
     this.rowindex_to_EmpiricalCompounds = this.make_rowindex_to_EmpiricalCompounds();
     this.compounds_to_EmpiricalCompounds = this.index_Compounds_to_EmpiricalCompounds();
 
-    // this is significant list
+    // this is significant feature list
     this.significant_features = this.data.getInput_featurelist();
     this.trioList = this.batch_rowindex_EmpCpd_Cpd(this.significant_features);
   }
@@ -87,14 +87,11 @@ public class DataMeetModel {
                   .get(key1).getAdducts().get(ion)
               && Constants.MASS_RANGE.get(1) > this.model.getMetabolicModel().getCompounds()
                   .get(key1).getAdducts().get(ion)) {
-            // cpdTreeList = new ArrayList<List<String>>();
             List<String> temp = new ArrayList<String>();
             temp.add(key1);
             temp.add(ion);
             temp.add(this.model.getMetabolicModel().getCompounds().get(key1).getAdducts().get(ion)
                 .toString());
-            // new added
-
             if (IonCpdTree.containsKey(this.model.getMetabolicModel().getCompounds().get(key1)
                 .getAdducts().get(ion).intValue())) {
               IonCpdTree.get(new Integer(this.model.getMetabolicModel().getCompounds().get(key1)

@@ -33,6 +33,7 @@ public class MetabolicNetwork {
 
   }
 
+  // Builds graph with the given set of Edges
   @SuppressWarnings("rawtypes")
   Graph<String, DefaultEdge> build_network(List<List<String>> edges) {
 

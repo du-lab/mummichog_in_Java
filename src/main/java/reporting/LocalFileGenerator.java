@@ -3,22 +3,17 @@ package reporting;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EmptyStackException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import com.opencsv.CSVWriter;
 import Models.MModule;
 import Models.MetabolicPathway;
-import driver.Orchestration;
 import functional_analysis.ActivityNetwork;
 import functional_analysis.ModularAnalysis;
 import functional_analysis.PathwayAnalysis;
@@ -26,6 +21,9 @@ import getuserdata.DataMeetModel;
 import getuserdata.EmpiricalCompound;
 import getuserdata.MassFeature;
 
+/*
+ *  This Class generates the output CSV files for the mummichog program
+ */
 public class LocalFileGenerator {
 
   private DataMeetModel mixedNetowrk;
@@ -49,6 +47,7 @@ public class LocalFileGenerator {
 
   }
 
+  // Generates Csv Output for Modular Analysis
   public void exportModularAnalysisResult(String filePath) {
     File file = new File(filePath);
     CSVWriter writer = null;
@@ -82,7 +81,7 @@ public class LocalFileGenerator {
 
   }
 
-
+ 
   String findTopPathways(List<String> nodes) {
     StringBuffer result = new StringBuffer();
     List<String> pathways = new ArrayList<String>();
@@ -161,6 +160,7 @@ public class LocalFileGenerator {
     return result.toString();
   }
 
+  // Generates CSV output File for Pathway Analysis 
   public void exportPathwayAnalysisResult(String filePath) {
     File file = new File(filePath);
     CSVWriter writer = null;
@@ -176,8 +176,6 @@ public class LocalFileGenerator {
       for (MetabolicPathway mp : this.pathwayAnalysis.getResultListOfPathways()) {
         List<List<String>> compunds = create_Cmpds(mp.getOverlapEmpiricalCompunds());
 
-        // Overlap Compunds are not being set when the overlap size is 5. Check the
-        // issue
         data.add(new String[] {mp.getName(), String.valueOf(mp.getOverlapSize()),
             String.valueOf(mp.getEmpSize()), String.valueOf(mp.getAdjust_p()),
             create_OverLapEmpiricalCmpds(mp.getOverlapEmpiricalCompunds()),
@@ -247,6 +245,7 @@ public class LocalFileGenerator {
     return result.toString();
   }
 
+  // Generates the Exmpirical Compound CSV output file
   public void exportEmpiricalCompunds(String filePath) {
     File file = new File(filePath);
     CSVWriter writer = null;
@@ -327,9 +326,6 @@ public class LocalFileGenerator {
       }
     }
 
-    // for (List<String> s : ec.getListOfFeatures()) {
-    // result.append("(").append(s.get(1)).append(";").append(s.get(3)).append(";").append(s.get(0)).append(")");
-    // }
     return result.toString();
   }
 

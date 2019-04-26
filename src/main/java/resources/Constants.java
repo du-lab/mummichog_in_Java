@@ -17,8 +17,7 @@ public class Constants {
   public static final double SIGNIFICANCE_CUTOFF = 0.05;
   public static final double CUTOFF_AVE_CONN = 0.5;
 
-  // TBD
-  // MASS_RANGE = (50, 2000)
+
   public static List<Integer> MASS_RANGE = new ArrayList<Integer>(Arrays.asList(50, 2000));
 
   public static final double RETENTION_TIME_TOLERANCE_FRAC = 0.01; // fraction of total retention

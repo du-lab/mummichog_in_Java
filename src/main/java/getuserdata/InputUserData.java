@@ -55,7 +55,7 @@ public class InputUserData {
     }
 
   }
-
+// Reads the input data be file or external program
   public void read() {
     /*
      * Read input feature lists to ListOfMassFeatures. Row_numbers (rowii+1) are used as primary ID.
@@ -85,6 +85,7 @@ public class InputUserData {
     text_to_ListOfMassFeatures(linesOfFile, "\t");
   }
 
+  // Converts input data to a list of mass features
   public void text_to_ListOfMassFeatures(List<String> textLines, String delimiter) {
     // Assigning header list values and deleting it from the data.
     this.header_fields = Arrays.asList(textLines.get(0).split(delimiter));
@@ -121,6 +122,7 @@ public class InputUserData {
 
   }
 
+  // Checks if there are any redundant rows in the data
   public void check_redundant(List<String> textLines) {
     Set<String> setofLines = new HashSet<String>(textLines);
     if (setofLines.size() != textLines.size()) {

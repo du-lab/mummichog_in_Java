@@ -88,6 +88,7 @@ public class EmpiricalCompound {
     return sb.toString();
   }
 
+  // Extracting various components like compounds, ions etc from list of features
   public void unpack_listOfFeatures() {
     Set<String> cmpndsSet = new HashSet<String>();
     for (List<String> list : listOfFeatures) {
@@ -99,6 +100,7 @@ public class EmpiricalCompound {
     this.compounds.addAll(cmpndsSet);
   }
 
+  // Evidence Score Calculation Function
   public void evaluate() {
 
     HashSet<String> S1 = new HashSet<String>(this.ions.keySet());

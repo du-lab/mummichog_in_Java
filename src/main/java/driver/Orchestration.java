@@ -36,6 +36,7 @@ public class Orchestration {
 
     ObjectMapper mapper = new ObjectMapper();
     try {
+      // Read the JSON file for Human and Worm models
       rm = mapper.readValue(Orchestration.class.getResource("JSON_metabolicModels.py"),
           RealModels.class);
       LOGGER.info("JSON File Read");
@@ -51,7 +52,7 @@ public class Orchestration {
 
     MetabolicNetwork theoreticalModel = null;
 
-    // specify which metabolic mode
+    // // Choosing appropriate Data Model based on Input parameter "Network"
     if (human.contains(userdata.getParadict().get("network"))) {
 
       theoreticalModel = new MetabolicNetwork(rm.getHuman_model_mfn());
@@ -75,8 +76,10 @@ public class Orchestration {
     Set<RowEmpcpd> combined_TrioList = new HashSet<RowEmpcpd>();
     combined_TrioList.addAll(pathwayAnalysis.collectHitTrios());
     combined_TrioList.addAll(modularAnalysis.collectHitTrios());
+    //Generating Activity Network from Modular and Pathway Analysis
     ActivityNetwork activityNetwork =
         new ActivityNetwork(new ArrayList<RowEmpcpd>(combined_TrioList), mixedNetwork);
+    //Generating Output CSV Files
     @SuppressWarnings("unused")
     LocalFileGenerator lfg = new LocalFileGenerator(mixedNetwork, pathwayAnalysis, modularAnalysis,
         activityNetwork, userdata.getParadict().get("outdir"));

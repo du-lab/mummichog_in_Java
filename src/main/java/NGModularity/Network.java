@@ -115,6 +115,7 @@ public class Network {
     }
   }
 
+  // Creates an Adjacency Matrix which is used as a representation of graph
   public void makeAdjacencyMatrix() {
     /*
      * Make adjacency matrix from nodes and edges. Edges are treated as not directional, thus matrix

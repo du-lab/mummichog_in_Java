@@ -14,6 +14,9 @@ import org.jgrapht.graph.DefaultEdge;
 import getuserdata.EmpiricalCompound;
 import pojo.RowEmpcpd;
 
+/*
+ * Data Structure of a Module for Modular Analysis
+ */
 public class MModule {
 
   private Graph<String, DefaultEdge> network;

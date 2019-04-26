@@ -38,9 +38,11 @@ public class ExecuteMummiChog {
 
   private final static Logger LOGGER = Logger.getLogger(ExecuteMummiChog.class.getName());
 
+  // Function to execute Mummichog from external programs
   public Map<String, List<Compound>> runMummiChog(String inputData, MummichogParams parameters) {
     LOGGER.info("Mummichog Code Run Begins");
 
+    //Generates map from input parameters
     Map<String, String> optDict = UserDataClass.dispatcher(parameters.generateArgumentString());
 
     InputUserData userdata = new InputUserData(optDict, true, inputData);
@@ -48,6 +50,7 @@ public class ExecuteMummiChog {
 
     ObjectMapper mapper = new ObjectMapper();
     try {
+      // Read the JSON file for Human and Worm models
       rm = mapper.readValue(ExecuteMummiChog.class.getResource("JSON_metabolicModels.py"),
           RealModels.class);
       LOGGER.info("JSON File Read");
@@ -63,7 +66,7 @@ public class ExecuteMummiChog {
 
     MetabolicNetwork theoreticalModel = null;
 
-    // specify which metabolic mode
+    // Choosing appropriate Data Model based on Input parameter "Network"
     if (human.contains(userdata.getParadict().get("network"))) {
 
       theoreticalModel = new MetabolicNetwork(rm.getHuman_model_mfn());
@@ -78,7 +81,6 @@ public class ExecuteMummiChog {
     PathwayAnalysis pathwayAnalysis = new PathwayAnalysis(mixedNetwork,
         mixedNetwork.getModel().getMetabolicModel().getMetabolic_pathways(), this);
     pathwayAnalysis.cpd_enrich_test();
-    // progress=30;
 
     // Module analysis, getting a list of Mmodule instances
     ModularAnalysis modularAnalysis = new ModularAnalysis(mixedNetwork, this);
@@ -88,6 +90,7 @@ public class ExecuteMummiChog {
     Set<RowEmpcpd> combined_TrioList = new HashSet<RowEmpcpd>();
     combined_TrioList.addAll(pathwayAnalysis.collectHitTrios());
     combined_TrioList.addAll(modularAnalysis.collectHitTrios());
+    //Generating Activity Network from Modular and Pathway Analysis
     ActivityNetwork activityNetwork =
         new ActivityNetwork(new ArrayList<RowEmpcpd>(combined_TrioList), mixedNetwork);
     @SuppressWarnings("unused")
@@ -95,6 +98,7 @@ public class ExecuteMummiChog {
         activityNetwork, userdata.getParadict().get("outdir"));
     MzMineOutput mzMine = new MzMineOutput(mixedNetwork);
     progress = 80.0;
+    //Generating Output CSV Files
     return mzMine.generateMzMineOutput();
   }
 

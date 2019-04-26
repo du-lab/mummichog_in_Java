@@ -218,11 +218,11 @@ public class ModularAnalysis {
               temp_edges.add(li);
             }
           }
-          newNetwork = build_network(temp_edges);
+          newNetwork = buildNetwork(temp_edges);
           // System.out.println(temp_edges);
           temp_edges.clear();
         } else {
-          newNetwork = build_network(edges);
+          newNetwork = buildNetwork(edges);
           seeds = new ArrayList<String>(newNetwork.vertexSet());
 
         }
@@ -279,8 +279,9 @@ public class ModularAnalysis {
     return result;
   }
 
+  // Builds a Graoh Object with a set of edges of Graph
   @SuppressWarnings("rawtypes")
-  Graph<String, DefaultEdge> build_network(List<List<String>> edges) {
+  Graph<String, DefaultEdge> buildNetwork(List<List<String>> edges) {
 
     Graph<String, DefaultEdge> result =
         new DefaultUndirectedGraph<String, DefaultEdge>(DefaultEdge.class);
@@ -334,6 +335,7 @@ public class ModularAnalysis {
         gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
       } catch (Exception e) {
         for (int i = 0; i < this.permutationScores.size(); i++) {
+          // This condition is used because current Gamma Distribution library does not support 0 or negative values.
           if (this.permutationScores.get(i) <= 0.0) {
             this.permutationScores.remove(i);
             this.permutationScores.add(0.00000000000000000000000000000001);
@@ -341,11 +343,6 @@ public class ModularAnalysis {
         }
         gammaDistribution = new GammaDistribution(this.giveDoubleArray(this.permutationScores));
       }
-
-      // System.out.println("Scale of distribution " + gammaDistribution.getScale());
-      // System.out.println("Entropy "+ gammaDistribution.entropy());
-      // System.out.println("Shape" + gammaDistribution.getShape());
-      // System.out.println("Mean of Distribution" + gammaDistribution.mean());
 
       for (MModule mod : this.modulesFromSignificantFeaures) {
         mod.setpValue((1 - gammaDistribution.cdf(mod.getActivityScore())));
@@ -357,16 +354,8 @@ public class ModularAnalysis {
 
     }
 
-    // // This is for testing
-    // System.out.println("Sno "+"Activity Score "+ "P Value");
-    // int i=0;
-    // for(MModule md :this.modulesFromSignificantFeaures ) {
-    // i++;
-    // System.out.print(i+"\t"+md.getActivityScore() +"\t"+md.getpValue());
-    // System.out.println();
-    // }
-
     this.topModules = new ArrayList<MModule>();
+    // Generating Top Modules which are below significant cutoff
     for (MModule module : this.modulesFromSignificantFeaures) {
       if (module.getpValue() < Constants.SIGNIFICANCE_CUTOFF) {
         this.topModules.add(module);
@@ -387,6 +376,7 @@ public class ModularAnalysis {
     return result;
   }
 
+  // Non-Parametric P Vale Calculation
   double calculatePValue(double x, List<Double> record) {
     // Calculate p-value based on the rank in record of scores
 

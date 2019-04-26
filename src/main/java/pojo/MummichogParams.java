@@ -1,5 +1,6 @@
 package pojo;
 
+// POJO Class to Pass Parameters to Mummichog through external programs
 public class MummichogParams {
 
   private double cutOff;

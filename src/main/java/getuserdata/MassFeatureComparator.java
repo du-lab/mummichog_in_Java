@@ -2,6 +2,7 @@ package getuserdata;
 
 import java.util.Comparator;
 
+// Custom Comparator for Mass Features
 public class MassFeatureComparator implements Comparator<MassFeature> {
 
   public int compare(MassFeature o1, MassFeature o2) {

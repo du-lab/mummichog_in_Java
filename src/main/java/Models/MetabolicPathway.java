@@ -7,6 +7,9 @@ import java.util.Set;
 import javax.json.JsonObject;
 import getuserdata.EmpiricalCompound;
 
+/*
+ * Data Structure of a Pathway for Pathway Analysis
+ */
 public class MetabolicPathway {
 
   private String id;

@@ -89,6 +89,7 @@ public class ActivityNetwork {
 
   }
 
+  // Finds the largest strongly connected subgraph
   public Graph<String, DefaultEdge> getLargestSubgraph(Graph<String, DefaultEdge> an) {
 
     BiconnectivityInspector<String, DefaultEdge> scAlg = new BiconnectivityInspector<>(an);
@@ -117,6 +118,7 @@ public class ActivityNetwork {
     return result;
   }
 
+  //Builds a Graph object with a set of edges
   @SuppressWarnings("rawtypes")
   Graph<String, DefaultEdge> build_network(List<List<String>> edges) {
 

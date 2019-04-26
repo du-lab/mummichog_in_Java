@@ -313,7 +313,7 @@ public class PathwayAnalysis {
       int epcdNum = mp.getEmpiricalCompounds().size();
       if (overlapSize > 0) {
         int nonneg = totalFeatures + overlapSize - epcdNum - querySetSize;
-
+        // calculate the fisher exact test
         result.add(FisherExact.getInstance(20000).getRightTailedP(overlapSize,
             (querySetSize - overlapSize), (epcdNum - overlapSize), nonneg));
       } else {

@@ -12,7 +12,9 @@ import getuserdata.EmpiricalCompound;
 import getuserdata.MassFeature;
 import pojo.Compound;
 
-
+/*
+ * This class is used as a data transfer object to export Mummichog's output to other programs.
+ */
 public class MzMineOutput {
   private DataMeetModel mixedNetowrk;
   private final static Logger LOGGER = Logger.getLogger(MzMineOutput.class.getName());
@@ -30,6 +32,7 @@ public class MzMineOutput {
     this.mixedNetowrk = mixedNetowrk;
   }
 
+  // Generates Output in format required for MzMine
   public Map<String, List<Compound>> generateMzMineOutput() {
     Map<String, List<Compound>> result = new HashMap<String, List<Compound>>();
 

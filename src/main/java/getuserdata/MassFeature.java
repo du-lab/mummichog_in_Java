@@ -24,9 +24,6 @@ public class MassFeature {
   private List<String> matched_EmpiricalCompounds;
   private Boolean is_significant;
 
-  // For future use
-  private int peak_quality;
-  private List<String> database_match;
 
   private final static Logger LOGGER = Logger.getLogger(MassFeature.class.getName());
 
@@ -41,12 +38,10 @@ public class MassFeature {
     this.statistic = statistic;
     this.compoundID_from_user = compoundID_from_user;
     this.is_significant = false;
-    this.peak_quality = 0;
 
     this.matched_Ions = new ArrayList<List<String>>();
     this.matched_Compounds = new ArrayList<String>();
     this.matched_EmpiricalCompounds = new ArrayList<String>();
-    this.database_match = new ArrayList<String>();
   }
 
   String make_str_output() {
@@ -136,29 +131,12 @@ public class MassFeature {
     this.is_significant = is_significant;
   }
 
-  public int getPeak_quality() {
-    return peak_quality;
-  }
-
-  public void setPeak_quality(int peak_quality) {
-    this.peak_quality = peak_quality;
-  }
-
-  public List<String> getDatabase_match() {
-    return database_match;
-  }
-
-  public void setDatabase_match(List<String> database_match) {
-    this.database_match = database_match;
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result =
         prime * result + ((compoundID_from_user == null) ? 0 : compoundID_from_user.hashCode());
-    result = prime * result + ((database_match == null) ? 0 : database_match.hashCode());
     result = prime * result + ((is_significant == null) ? 0 : is_significant.hashCode());
     result = prime * result + ((matched_Compounds == null) ? 0 : matched_Compounds.hashCode());
     result = prime * result
@@ -166,7 +144,6 @@ public class MassFeature {
     result = prime * result + ((matched_Ions == null) ? 0 : matched_Ions.hashCode());
     result = prime * result + ((mz == null) ? 0 : mz.hashCode());
     result = prime * result + ((p_value == null) ? 0 : p_value.hashCode());
-    result = prime * result + peak_quality;
     result = prime * result + ((retention_time == null) ? 0 : retention_time.hashCode());
     result = prime * result + ((row_number == null) ? 0 : row_number.hashCode());
     result = prime * result + ((statistic == null) ? 0 : statistic.hashCode());
@@ -186,11 +163,6 @@ public class MassFeature {
       if (other.compoundID_from_user != null)
         return false;
     } else if (!compoundID_from_user.equals(other.compoundID_from_user))
-      return false;
-    if (database_match == null) {
-      if (other.database_match != null)
-        return false;
-    } else if (!database_match.equals(other.database_match))
       return false;
     if (is_significant == null) {
       if (other.is_significant != null)
@@ -222,8 +194,6 @@ public class MassFeature {
         return false;
     } else if (!p_value.equals(other.p_value))
       return false;
-    if (peak_quality != other.peak_quality)
-      return false;
     if (retention_time == null) {
       if (other.retention_time != null)
         return false;
@@ -241,7 +211,5 @@ public class MassFeature {
       return false;
     return true;
   }
-
-
 
 }

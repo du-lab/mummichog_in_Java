@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/*
+ * Performs reservoir sampling
+ */
+
 public class ReservoirSampling {
   // A function to randomly select k items from stream[0..n-1].
   public static List<String> selectKItems(List<String> stream, int k) {
