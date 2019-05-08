@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.du-lab.Mummichog</groupId>
 	<artifactId>Mummichog</artifactId>
-	<version>1.0.8</version>
+	<version>1.0.11</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>Java implementation of Mummichog Algorithm</description>
@@ -198,6 +198,23 @@
 				<configuration>
 					<testFailureIgnore>false</testFailureIgnore>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-jdk-sources</id>
+						<phase>site</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeArtifactIds>srczip</includeArtifactIds>
+							<outputDirectory>${project.build.directory}/jdk-sources</outputDirectory>
+							<silent>false</silent>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
