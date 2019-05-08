@@ -8,22 +8,25 @@ public class MummichogParams {
   private boolean force_primary_ion;
   private String modeling;
   private String output;
+  private String ionMode;
 
 
 
   public MummichogParams(double cutOff, String network, boolean force_primary_ion, String modeling,
-      String output) {
+      String ionMode,String output) {
     super();
     this.cutOff = cutOff;
     this.network = network;
     this.force_primary_ion = force_primary_ion;
     this.modeling = modeling;
     this.output = output;
+    this.setIonMode(ionMode);
+    
   }
 
 
   public String[] generateArgumentString() {
-    String[] arguments = new String[10];
+    String[] arguments = new String[12];
 
     arguments[0] = "--cutoff";
     arguments[1] = String.valueOf(this.cutOff);
@@ -35,6 +38,8 @@ public class MummichogParams {
     arguments[7] = this.modeling;
     arguments[8] = "--output";
     arguments[9] = this.output;
+    arguments[10]="--mode";
+    arguments[11]=this.ionMode;
 
     return arguments;
   }
@@ -77,6 +82,16 @@ public class MummichogParams {
 
   public void setOutput(String output) {
     this.output = output;
+  }
+
+
+  public String getIonMode() {
+    return ionMode;
+  }
+
+
+  public void setIonMode(String ionMode) {
+    this.ionMode = ionMode;
   }
 
 

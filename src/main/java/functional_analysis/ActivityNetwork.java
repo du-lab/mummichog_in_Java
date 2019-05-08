@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
-import org.jfree.util.Log;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 import org.jgrapht.graph.AsSubgraph;
@@ -70,7 +69,7 @@ public class ActivityNetwork {
         double conn = this.getAveConnections(subG2);
         if (an.vertexSet().size() > Constants.MODULE_SIZE_LIMIT
             || conn > Constants.CUTOFF_AVE_CONN) {
-          Log.info("Activity Network was connected in 2 steps. ");
+          LOGGER.info("Activity Network was connected in 2 steps. ");
           return subG2;
         } else {
           edges = this.getgraphedges(new ArrayList<String>(subG2.vertexSet()));
