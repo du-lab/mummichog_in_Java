@@ -200,6 +200,7 @@ public class DataMeetModel {
       tempList.add(cf.getIon());
       tempList.add(cf.getMass().toString());
       tempList.add(compoundID);
+      tempList.add(cf.getMassFeature().getCompoundID_from_user());
       all_mzFeatures.add(tempList);
     }
 

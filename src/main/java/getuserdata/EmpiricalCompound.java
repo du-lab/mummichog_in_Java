@@ -27,6 +27,7 @@ public class EmpiricalCompound {
 
   private List<List<String>> listOfFeatures;
   private String str_row_ion;
+  private String feature_ion;
   private String eId;
   private String face_compound;
   private List<String> chosen_compounds;
@@ -35,6 +36,7 @@ public class EmpiricalCompound {
   private int statistic;
   private List<String> compounds;
   private List<String> massfeature_rows;
+  private List<String> adapFeatureNames;
   private Map<String, String> ions;
   private Map<String, String> row_to_ion;
   private MassFeature mzFeature_of_highest_statistic;
@@ -49,6 +51,7 @@ public class EmpiricalCompound {
 
     this.listOfFeatures = listOfFeatures;
     this.massfeature_rows = new ArrayList<String>();
+    this.adapFeatureNames= new ArrayList<String>();
     this.chosen_compounds = new ArrayList<String>();
     this.ions = new HashMap<String, String>();
     this.row_to_ion = new HashMap<String, String>();
@@ -56,6 +59,7 @@ public class EmpiricalCompound {
     // Sorting the list of features
     Collections.sort(this.listOfFeatures, (a, b) -> a.get(1).compareTo(b.get(1)));
     this.str_row_ion = this.make_str_row_ion();
+    this.feature_ion=this.make_feature_ion();
     this.unpack_listOfFeatures();
     this.eId = "";
     this.face_compound = "";
@@ -88,6 +92,16 @@ public class EmpiricalCompound {
     return sb.toString();
   }
 
+  public String make_feature_ion() {
+    // feature order is fixed now after sorting by row_number
+    StringBuilder sb = new StringBuilder();
+    for (List<String> list : listOfFeatures) {
+      sb.append(list.get(5)).append("_").append(list.get(2)).append(";");
+    }
+
+    return sb.toString();
+  }
+
   // Extracting various components like compounds, ions etc from list of features
   public void unpack_listOfFeatures() {
     Set<String> cmpndsSet = new HashSet<String>();
@@ -96,6 +110,7 @@ public class EmpiricalCompound {
       massfeature_rows.add(list.get(1));
       ions.put(list.get(2), list.get(3));
       row_to_ion.put(list.get(1), list.get(2));
+      this.adapFeatureNames.add(list.get(5));
     }
     this.compounds.addAll(cmpndsSet);
   }
@@ -251,6 +266,22 @@ public class EmpiricalCompound {
 
   public void setMzFeature_of_highest_statistic(MassFeature mzFeature_of_highest_statistic) {
     this.mzFeature_of_highest_statistic = mzFeature_of_highest_statistic;
+  }
+
+  public List<String> getAdapFeatureNames() {
+    return adapFeatureNames;
+  }
+
+  public void setAdapFeatureNames(List<String> adapFeatureNames) {
+    this.adapFeatureNames = adapFeatureNames;
+  }
+
+  public String getFeature_ion() {
+    return feature_ion;
+  }
+
+  public void setFeature_ion(String feature_ion) {
+    this.feature_ion = feature_ion;
   }
 
   @Override

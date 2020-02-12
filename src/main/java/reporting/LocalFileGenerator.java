@@ -172,14 +172,15 @@ public class LocalFileGenerator {
       writer = new CSVWriter(outputfile);
       List<String[]> data = new ArrayList<String[]>();
       data.add(new String[] {"Pathway", "Overlap Size", "Pathway Size", "P Value",
-          "OverLap Empirical Compunds(ID)", "OvaerLap Features(ID)", "Overlap Features(Name)"});
+          "OverLap Empirical Compunds(ID)","OverLap ADAP Feature IDs", "OvaerLap Features(ID)", "Overlap Features(Name)"});
       for (MetabolicPathway mp : this.pathwayAnalysis.getResultListOfPathways()) {
         List<List<String>> compunds = create_Cmpds(mp.getOverlapEmpiricalCompunds());
 
         data.add(new String[] {mp.getName(), String.valueOf(mp.getOverlapSize()),
             String.valueOf(mp.getEmpSize()), String.valueOf(mp.getAdjust_p()),
             create_OverLapEmpiricalCmpds(mp.getOverlapEmpiricalCompunds()),
-            create_CmpdsString(compunds), create_CmpdsNames(compunds)});
+                create_OverLapADAPFeatures(mp.getOverlapEmpiricalCompunds()),
+                create_CmpdsString(compunds), create_CmpdsNames(compunds)});
       }
       writer.writeAll(data);
     } catch (Exception e) {
@@ -245,6 +246,18 @@ public class LocalFileGenerator {
     return result.toString();
   }
 
+
+  String create_OverLapADAPFeatures(List<EmpiricalCompound> ecs) {
+    StringBuilder result = new StringBuilder();
+    for (EmpiricalCompound s : ecs) {
+      result.append(s.getAdapFeatureNames()).append(";");
+    }
+    if (result.length() > 0) {
+      return result.substring(0, result.length() - 1);
+    }
+    return result.toString();
+  }
+
   // Generates the Exmpirical Compound CSV output file
   public void exportEmpiricalCompunds(String filePath) {
     File file = new File(filePath);
@@ -256,11 +269,11 @@ public class LocalFileGenerator {
       // create CSVWriter object file writer object as parameter
       writer = new CSVWriter(outputfile);
       List<String[]> data = new ArrayList<String[]>();
-      data.add(new String[] {"EID", "massfeature_rows", "rows_mz_retention_time", "str_row_ion",
+      data.add(new String[] {"EID", "feature_names", "feature_mz_retention_time", "feature_ion",
           "compounds", "compound_names"});
       for (EmpiricalCompound ec : this.mixedNetowrk.getListOfEmpiricalCompounds()) {
         data.add(new String[] {ec.geteId(), createMassFeature_Rows(ec), createMz_Rows(ec),
-            ec.getStr_row_ion(), createCompunds(ec), createCompundNames(ec)});
+            ec.getFeature_ion(), createCompunds(ec), createCompundNames(ec)});
       }
 
       writer.writeAll(data);
@@ -277,11 +290,11 @@ public class LocalFileGenerator {
 
   String createMassFeature_Rows(EmpiricalCompound ec) {
     StringBuilder result = new StringBuilder();
-    for (String s : ec.getMassfeature_rows()) {
+    for (String s : ec.getAdapFeatureNames()) {
       result.append(s).append(";");
     }
     if (result.length() > 0) {
-      return result.substring(0, result.length() - 2);
+      return result.substring(0, result.length() - 1);
     }
     return result.toString();
   }
@@ -319,7 +332,7 @@ public class LocalFileGenerator {
     for (String row : ec.getMassfeature_rows()) {
       for (MassFeature mf : this.mixedNetowrk.getData().getListOfMassFeatures()) {
         if (mf.getRow_number().equalsIgnoreCase(row)) {
-          result.append("(").append(row).append(";").append(mf.getMz()).append(";")
+          result.append("(").append(mf.getCompoundID_from_user()).append(";").append(mf.getMz()).append(";")
               .append(mf.getRetention_time()).append(")");
           break;
         }

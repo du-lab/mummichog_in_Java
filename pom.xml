@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.du-lab.Mummichog</groupId>
 	<artifactId>Mummichog</artifactId>
-	<version>1.0.11</version>
+	<version>1.0.12</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>Java implementation of Mummichog Algorithm</description>
@@ -31,7 +31,6 @@
 		<developerConnection>scm:git:ssh://github.com/du-lab/mummichog_in_Java.git</developerConnection>
 		<url>https://github.com/du-lab/mummichog_in_Java.git/tree/master</url>
 	</scm>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -71,7 +70,6 @@
 			<artifactId>jblas</artifactId>
 			<version>1.2.4</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.github.haifengl</groupId>
 			<artifactId>smile-core</artifactId>
@@ -80,7 +78,7 @@
 		<dependency>
 			<groupId>net.maizegenetics</groupId>
 			<artifactId>tassel</artifactId>
-			<version>5.2.47</version>
+			<version>5.2.59</version>
 		</dependency>
 		<dependency>
 			<groupId>com.opencsv</groupId>
@@ -115,6 +113,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
